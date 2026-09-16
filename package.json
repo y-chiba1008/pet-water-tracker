@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "start-supabase": "vite",
+    "start-all": "pnpm run start-supabase && pnpm run dev",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
