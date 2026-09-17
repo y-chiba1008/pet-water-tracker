@@ -28,3 +28,6 @@ dist-ssr
 
 # supabase
 supabase/snippets
+
+# scripts
+scripts/seed-users.config.json

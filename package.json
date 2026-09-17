@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
-    "splinter": "curl -sL \"https://raw.githubusercontent.com/supabase/splinter/main/splinter.sql\" | psql \"$(supabase status -o env | grep '^DB_URL=' | cut -d= -f2- | tr -d '\"')\" --csv"
+    "splinter": "curl -sL \"https://raw.githubusercontent.com/supabase/splinter/main/splinter.sql\" | psql \"$(supabase status -o env | grep '^DB_URL=' | cut -d= -f2- | tr -d '\"')\" --csv",
+    "seed-users": "tsx scripts/seed-users.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
@@ -40,9 +41,11 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "dotenv": "^17.4.2",
     "oxlint": "^1.81.0",
     "supabase": "^2.117.0",
     "tailwindcss": "^4.3.3",
+    "tsx": "^4.23.13",
     "typescript": "~6.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.0"
