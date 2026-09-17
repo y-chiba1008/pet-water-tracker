@@ -40,31 +40,46 @@
 # 1. 依存パッケージをインストール
 pnpm install
 
-# 2. 環境変数ファイルを作成
+# 2. 環境変数ファイルを作成し、値を埋める
 cp .env.example .env
+#   → Google OAuth の Client ID / Secret を記入
+#   → `supabase start` 後に表示される URL・キーも記入
 
 # 3. ローカル Supabase を起動（Docker が必要）
 pnpm exec supabase start
-#   → 表示された API URL と anon key を .env に記入
 
 # 4. DBスキーマを適用
 pnpm exec supabase db reset
 
-# 5. 開発サーバーを起動
+# 5. 許可ユーザーを事前登録（新規サインアップは無効）
+pnpm seed-users
+
+# 6. 開発サーバーを起動
 pnpm dev
 ```
 
 ### 必要な環境変数（`.env`）
 
 ```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+SUPABASE_SECRET_KEY=your-secret-key
+VITE_SUPABASE_URL=${SUPABASE_URL}
+VITE_SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY}
+
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
 | 変数名 | 説明 |
 |---|---|
-| `VITE_SUPABASE_URL` | Supabase プロジェクトの API URL。ローカルの場合は `supabase start` 実行後に表示される URL |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase の publishable（anon）キー。ローカルの場合は `supabase start` 実行後に表示される anon key |
+| `SUPABASE_URL` | Supabase の API URL。ローカルは `supabase start` 実行後に表示される URL |
+| `SUPABASE_PUBLISHABLE_KEY` | publishable（anon）キー。ローカルは `supabase start` 実行後に表示される値 |
+| `SUPABASE_SECRET_KEY` | service role（secret）キー。`pnpm seed-users` で使用 |
+| `VITE_SUPABASE_URL` | フロントエンド用。通常は `SUPABASE_URL` と同じ |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | フロントエンド用。通常は `SUPABASE_PUBLISHABLE_KEY` と同じ |
+| `GOOGLE_CLIENT_ID` | Google Cloud OAuth の Client ID（`supabase/config.toml` が参照） |
+| `GOOGLE_CLIENT_SECRET` | Google Cloud OAuth の Client Secret（`supabase/config.toml` が参照） |
 
 ---
 
@@ -78,6 +93,7 @@ VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 | `pnpm test` | Vitest をウォッチモードで実行 |
 | `pnpm test:run` | Vitest を1回実行 |
 | `pnpm lint` | oxlint でLintチェック |
+| `pnpm seed-users` | 許可ユーザーを Admin API で事前作成 |
 | `pnpm splinter` | [splinter](https://github.com/supabase/splinter) でDBアドバイスを確認 |
 
 ---
@@ -119,6 +135,9 @@ pet-water-tracker/
 │   │   └── types/
 │   │       └── database.ts      # Supabase CLIで生成した型定義
 │   └── main.tsx
+├── scripts/
+│   ├── seed-users.ts            # 許可ユーザー作成スクリプト
+│   └── seed-users.config.json   # 事前登録するメール一覧
 ├── supabase/
 │   ├── config.toml
 │   └── migrations/              # SQLマイグレーション
@@ -137,9 +156,18 @@ pet-water-tracker/
 
 - Google SSO のみ対応（他のプロバイダは使用しない）
 - 利用者は事前登録した2名のみ
-- 新規サインアップは Supabase 側で無効化する
+- 新規サインアップは無効（`supabase/config.toml` の `enable_signup = false`）
+- Google プロバイダは `[auth.external.google]` で有効化し、Client ID / Secret は `.env` の `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` から読む
 
-ローカル開発でも Google プロバイダの設定が必要です（`supabase/config.toml` の `[auth.external.google]`）。
+### 許可ユーザーの事前登録
+
+新規サインアップが無効なため、Google ログイン前に Admin API でユーザーを作成する必要があります。
+
+1. `scripts/seed-users.config.json` に許可するメールアドレスを記載する
+2. `.env` に `SUPABASE_SECRET_KEY` を設定する（ローカルは `supabase start` の出力）
+3. `pnpm seed-users` を実行する
+
+作成されたユーザーは、同じメールの Google アカウントでログインできます。
 
 ---
 

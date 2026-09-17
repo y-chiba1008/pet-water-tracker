@@ -168,22 +168,35 @@ create or replace function private.is_authorized(uid uuid) returns boolean ...
 ## 認証
 
 - **Google SSO のみ**（他プロバイダ不使用）
-- 利用者は**事前登録した2名のみ**（新規サインアップは Supabase 側で無効化）
-- ローカル開発でも Google プロバイダ設定が必要（`supabase/config.toml` の `[auth.external.google]`）
+- 利用者は**事前登録した2名のみ**
+- 新規サインアップは無効（`supabase/config.toml` の `enable_signup = false`）
+- Google プロバイダは `[auth.external.google]` で有効化。Client ID / Secret は `.env` の `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` を `env(...)` で参照する
+- 許可ユーザーは `pnpm seed-users` で Admin API 経由で事前作成する（`scripts/seed-users.config.json` のメール一覧）
 
 ---
 
 ## 環境変数
 
 ```env
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+SUPABASE_URL=http://127.0.0.1:54321
+SUPABASE_PUBLISHABLE_KEY=your-publishable-key
+SUPABASE_SECRET_KEY=your-secret-key
+VITE_SUPABASE_URL=${SUPABASE_URL}
+VITE_SUPABASE_PUBLISHABLE_KEY=${SUPABASE_PUBLISHABLE_KEY}
+
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
 ```
 
 | 変数名 | 説明 |
 |---|---|
-| `VITE_SUPABASE_URL` | Supabase プロジェクトの API URL |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Supabase の publishable（anon）キー |
+| `SUPABASE_URL` | Supabase の API URL |
+| `SUPABASE_PUBLISHABLE_KEY` | publishable（anon）キー |
+| `SUPABASE_SECRET_KEY` | service role（secret）キー。`pnpm seed-users` で使用 |
+| `VITE_SUPABASE_URL` | フロントエンド用 API URL |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | フロントエンド用 publishable キー |
+| `GOOGLE_CLIENT_ID` | Google Cloud OAuth Client ID（`config.toml` が参照） |
+| `GOOGLE_CLIENT_SECRET` | Google Cloud OAuth Client Secret（`config.toml` が参照） |
 
 ---
 
@@ -198,6 +211,9 @@ pnpm exec supabase start
 
 # DBリセット＆マイグレーション適用
 pnpm exec supabase db reset
+
+# 許可ユーザーを事前登録（Admin API）
+pnpm seed-users
 
 # テスト
 pnpm test:run
@@ -268,3 +284,4 @@ pnpm splinter  # 警告がないことを確認
 - **`splinter` の実行について**: `supabase db advisors --local` は古いバンドル版 splinter を使うため一部警告が拾えない。`pnpm splinter` を使うこと（詳細は `docs/splinter-memo.md`）
 - **マイグレーション変更時**: `pnpm exec supabase db reset` でローカルに再適用するか、`pnpm exec supabase db push` でリモートへ反映する
 - **`shared/types/database.ts`**: Supabase CLIの型生成コマンド（`supabase gen types typescript`）の出力先として想定。手動編集しない
+- **ローカル認証**: Google OAuth 用の `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` が `.env` に必要。`db reset` 後は `pnpm seed-users` で許可ユーザーを再作成する
