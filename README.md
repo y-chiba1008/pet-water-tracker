@@ -143,12 +143,13 @@ pet-water-tracker/
 │   └── migrations/              # SQLマイグレーション
 ├── docs/                        # 設計ドキュメント
 │   ├── table-definitions.md
-│   └── design-guidelines.md
+│   ├── architecture.md
+│   └── knowledge/               # ナレッジ蓄積
 ├── .env.example
 └── package.json
 ```
 
-詳細なフォルダ構成は [`docs/design-guidelines.md`](docs/design-guidelines.md) を参照してください。
+詳細なフォルダ構成は [`docs/architecture.md`](docs/architecture.md) を参照してください。
 
 ---
 

@@ -34,9 +34,9 @@
 
 ## アーキテクチャ方針
 
-詳細は `docs/design-guidelines.md` を参照。要点は以下のとおり。
+詳細は `docs/architecture.md` を参照。要点は以下のとおり。
 
-※ 画面のビジュアルデザイン（色・タイポ・レイアウトなど）は `DESIGN.md` を参照。`docs/design-guidelines.md` はコード設計の指針。
+※ 画面のビジュアルデザイン（色・タイポ・レイアウトなど）は `DESIGN.md` を参照。`docs/architecture.md` はコード設計の指針。
 
 ### Repository パターン（データアクセス層の分離）
 
@@ -284,6 +284,10 @@ Issue に紐づく作業では、ブランチ名を `<プレフィックス>/#<i
 - `fix/#12_login_redirect`
 - `docs/#3_update_agents_md`
 
+### Git / ファイルのリネーム・移動
+
+ファイルやディレクトリのリネーム・移動は、履歴を引き継ぐために `git mv` を使う（通常の削除＋新規作成や OS の `mv` のみは避ける）。
+
 ---
 
 ## チェックリスト
@@ -309,7 +313,7 @@ pnpm splinter  # 警告がないことを確認
 
 ## 注意事項
 
-- **`splinter` の実行について**: `supabase db advisors --local` は古いバンドル版 splinter を使うため一部警告が拾えない。`pnpm splinter` を使うこと（詳細は `docs/splinter-memo.md`）
+- **`splinter` の実行について**: `supabase db advisors --local` は古いバンドル版 splinter を使うため一部警告が拾えない。`pnpm splinter` を使うこと（詳細は `docs/knowledge/splinter.md`）
 - **マイグレーション変更時**: `pnpm exec supabase db reset` でローカルに再適用するか、`pnpm exec supabase db push` でリモートへ反映する
 - **`shared/types/database.ts`**: Supabase CLIの型生成コマンド（`supabase gen types typescript`）の出力先として想定。手動編集しない
 - **ローカル認証**: Google OAuth 用の `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` が `.env` に必要。`db reset` 後は `pnpm seed-users` で許可ユーザーを再作成する
