@@ -1,12 +1,34 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { signInWithGoogle } from '@/features/auth/api/authRepository'
+import {
+  parseAuthCallbackError,
+  toLoginErrorMessage,
+} from '@/features/auth/lib/authCallbackError'
 import { Button } from '@/components/ui/button'
 import googleGLogoLight from '@/assets/google-g-logo-light.svg'
 import logo from '@/assets/logo.png'
 
+function readCallbackErrorMessage(): string | null {
+  const callbackError = parseAuthCallbackError(window.location.href)
+  return callbackError ? toLoginErrorMessage(callbackError) : null
+}
+
 export function LoginPage() {
+  const navigate = useNavigate()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(
+    readCallbackErrorMessage,
+  )
+
+  useEffect(() => {
+    if (!parseAuthCallbackError(window.location.href)) {
+      return
+    }
+
+    // 表示用にメッセージは state に残し、URL からはエラーパラメータを除去する
+    void navigate('/login', { replace: true })
+  }, [navigate])
 
   async function handleGoogleLogin() {
     setIsSubmitting(true)

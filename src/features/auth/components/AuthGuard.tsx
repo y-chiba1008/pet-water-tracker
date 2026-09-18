@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from 'react-router'
+import { Navigate, Outlet, useLocation } from 'react-router'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 
 function AuthLoading() {
@@ -12,13 +12,23 @@ function AuthLoading() {
 /** 未認証ユーザーを /login へ誘導する */
 export function RequireAuth() {
   const { session, isLoading } = useAuth()
+  const location = useLocation()
 
   if (isLoading) {
     return <AuthLoading />
   }
 
   if (!session) {
-    return <Navigate to="/login" replace />
+    return (
+      <Navigate
+        to={{
+          pathname: '/login',
+          search: location.search,
+          hash: location.hash,
+        }}
+        replace
+      />
+    )
   }
 
   return <Outlet />
