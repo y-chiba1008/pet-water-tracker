@@ -2,9 +2,17 @@
  * ユーザーを作成するスクリプト
  */
 
-import config from './seed-users.config.json' with { type: 'json' };
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { createClient } from '@supabase/supabase-js';
 import 'dotenv/config';
+
+type SeedUsersConfig = {
+    users: Array<{ email: string }>;
+};
+
+const configPath = join(import.meta.dirname, 'seed-users.config.json');
+const config = JSON.parse(readFileSync(configPath, 'utf-8')) as SeedUsersConfig;
 
 const supabaseUrl = process.env.SUPABASE_URL ?? 'http://127.0.0.1:54321';
 const serviceRoleKey = process.env.SUPABASE_SECRET_KEY!;
