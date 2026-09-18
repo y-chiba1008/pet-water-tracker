@@ -36,6 +36,8 @@
 
 詳細は `docs/design-guidelines.md` を参照。要点は以下のとおり。
 
+※ 画面のビジュアルデザイン（色・タイポ・レイアウトなど）は `DESIGN.md` を参照。`docs/design-guidelines.md` はコード設計の指針。
+
 ### Repository パターン（データアクセス層の分離）
 
 Supabaseへのクエリはコンポーネント・hookに直書きせず、`api/xxxRepository.ts` に集約する。
@@ -250,11 +252,14 @@ pnpm exec supabase gen types typescript --local > src/shared/types/database.ts
 - React Hook Form + Zod のセットで実装する
 - スキーマ定義（`z.object(...)`）はコンポーネントファイルの外に切り出す
 
-### スタイリング
+### スタイリング / UIデザイン
+
+画面の見た目・レイアウト・カラー・タイポグラフィなどは **`DESIGN.md` に従う**（カラーパレット、フォント、コンポーネント方針、Do/Don't など）。
 
 - Tailwind CSS のユーティリティクラスを使用
 - shadcn/ui のコンポーネントを積極的に活用する
 - クラス名の結合には `cn()` ユーティリティを使用する
+- 色・余白・角丸・影などは `DESIGN.md` のトークン・指針に合わせる（独自の見た目を増やさない）
 
 ### Git / ブランチ命名
 

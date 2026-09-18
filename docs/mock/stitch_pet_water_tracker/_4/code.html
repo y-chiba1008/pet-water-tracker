@@ -1,0 +1,124 @@
+<!DOCTYPE html><html class="h-full" lang="ja" style=""><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"><title>猫の飲水量記録</title><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@500;600;700&amp;display=swap" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config = {darkMode: "class", theme: {extend: {colors: {"surface-bright": "#fff8f5", "on-tertiary-fixed-variant": "#004c69", "on-tertiary": "#ffffff", primary: "#006591", background: "#fff8f5", "tertiary-container": "#00a7e0", outline: "#6e7881", "outline-variant": "#bec8d2", "on-surface": "#1f1b17", "text-secondary": "#78716C", "tertiary-fixed-dim": "#7bd0ff", "on-error": "#ffffff", "surface-variant": "#eae1da", "surface-container": "#f6ece6", "water-deep": "#0284C7", "primary-fixed": "#c9e6ff", "secondary-fixed-dim": "#ffb690", "secondary-fixed": "#ffdbca", "tertiary-fixed": "#c4e7ff", "cat-apricot": "#FFEDD5", "on-tertiary-fixed": "#001e2c", "surface-container-highest": "#eae1da", "on-background": "#1f1b17", error: "#ba1a1a", surface: "#fff8f5", "status-warning": "#F59E0B", "status-warning-bg": "#FEF3C7", "on-primary-fixed": "#001e2f", "surface-container-high": "#f0e6e0", "text-primary": "#292524", "on-tertiary-container": "#00384e", "canvas-bg": "#FAF7F2", "primary-container": "#0ea5e9", "surface-card": "#FFFFFF", "water-cyan": "#38BDF8", "water-tint": "#E0F2FE", "on-secondary": "#ffffff", "on-error-container": "#93000a", "text-tertiary": "#A8A29E", "error-container": "#ffdad6", "inverse-primary": "#89ceff", "inverse-on-surface": "#f9efe8", "surface-subtle": "#F5EFEB", "secondary-container": "#fd761a", "on-primary-fixed-variant": "#004c6e", "primary-fixed-dim": "#89ceff", "on-secondary-container": "#5c2400", "on-surface-variant": "#3e4850", "cat-terracotta": "#EA580C", "border-gentle": "#E7DFD8", "inverse-surface": "#342f2b", "on-secondary-fixed-variant": "#783200", tertiary: "#00668a", "surface-tint": "#006591", secondary: "#9d4300", "on-secondary-fixed": "#341100", "on-primary-container": "#003751", "surface-container-lowest": "#ffffff", "surface-container-low": "#fcf2eb", "surface-dim": "#e2d8d2", "on-primary": "#ffffff"}, borderRadius: {DEFAULT: "0.125rem", lg: "0.25rem", xl: "0.5rem", full: "0.75rem"}, spacing: {"space-xl": "2rem", "margin-lg": "2.5rem", gutter: "1rem", margin: "1rem", "gutter-lg": "2rem", "space-xs": "0.25rem", "margin-md": "1.5rem", "gutter-md": "1.5rem", "space-lg": "1.5rem", "space-sm": "0.5rem", "space-md": "1rem", "space-2xl": "3rem"}, fontFamily: {"label-lg": ["Plus Jakarta Sans"], "label-sm": ["Plus Jakarta Sans"], "label-md": ["Plus Jakarta Sans"], "headline-sm": ["Plus Jakarta Sans"], "body-md": ["Inter"], "headline-lg": ["Plus Jakarta Sans"], "headline-md": ["Plus Jakarta Sans"], "headline-lg-mobile": ["Plus Jakarta Sans"], "display-lg": ["Plus Jakarta Sans"], "display-lg-mobile": ["Plus Jakarta Sans"], "body-lg": ["Inter"], "body-sm": ["Inter"], "metric-display": ["Plus Jakarta Sans"], headline: ["Plus Jakarta Sans"], display: ["Plus Jakarta Sans"], body: ["Inter"], label: ["Plus Jakarta Sans"]}, fontSize: {"label-lg": ["14px", {lineHeight: "20px", fontWeight: "600"}], "label-sm": ["11px", {lineHeight: "14px", letterSpacing: "0.02em", fontWeight: "500"}], "label-md": ["12px", {lineHeight: "16px", fontWeight: "600"}], "headline-sm": ["16px", {lineHeight: "24px", fontWeight: "600"}], "body-md": ["14px", {lineHeight: "22px", fontWeight: "400"}], "headline-lg": ["28px", {lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "600"}], "headline-md": ["20px", {lineHeight: "28px", fontWeight: "600"}], "headline-lg-mobile": ["22px", {lineHeight: "30px", letterSpacing: "0em", fontWeight: "600"}], "display-lg": ["36px", {lineHeight: "44px", letterSpacing: "-0.02em", fontWeight: "700"}], "display-lg-mobile": ["28px", {lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "700"}], "body-lg": ["16px", {lineHeight: "24px", fontWeight: "400"}], "body-sm": ["12px", {lineHeight: "18px", fontWeight: "400"}], "metric-display": ["32px", {lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700"}]}}}};</script><style>@layer base{html,body{width:100vw;min-height:100%;margin:0;padding:0;background-color:#FAF7F2;color:#292524;}body{overscroll-behavior-y:none;-webkit-tap-highlight-color:transparent;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-canvas-bg font-body-md text-body-md text-text-primary flex flex-col min-h-screen selection:bg-water-tint selection:text-primary"><header class="fixed top-0 w-full z-50 pt-safe bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]"><div class="h-16 px-gutter flex items-center justify-between max-w-screen-md mx-auto w-full"><div class="flex items-center gap-space-sm min-w-0"><img alt="Circular logo icon with transparent outer background and solid white fill inside the circle. Features a black cat with white peanut-shaped muzzle peeking over a white water bowl with cyan droplet and water splash." class="h-8 w-auto object-contain flex-shrink-0" src="https://lh3.googleusercontent.com/aida/AEtjO1W9yD-KR95e-Hxqb2jTCPsHOamJRTeA0NZnSki9eY35woueH-53cZunrFGRqlagjAZuzmAF8ekRh9sKrT36pSqniptQYRZToq4pT8oe4xZZK_lSZWS4Rbw1l1oFyNxeQxo2ewwm2pCIZh5w4ISoMt5V6S7QXOmRmlMobALGr9QvA-9qk5bkV_IGozyaJjcesoAOEVeFcxoF61pVzql5HsFPHocIjx9aaSOJRoY1XeQRxErSCIGY0PQNB-PT"><div class="flex flex-col min-w-0"><span class="font-label-sm text-label-sm text-text-secondary truncate leading-tight">猫の飲水量記録</span><h1 class="font-headline-sm text-headline-sm text-text-primary truncate">個別給水</h1></div></div><div class="flex items-center gap-space-sm flex-shrink-0"><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="flex-1 flex flex-col relative w-full pt-16 pb-24 bg-canvas-bg max-w-screen-md mx-auto"><div class="flex flex-col w-full px-gutter py-space-md gap-space-md max-w-screen-md mx-auto"><div class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col gap-space-sm"><div class="flex items-center justify-between"><div class="flex items-center gap-space-xs text-text-secondary"><span class="material-symbols-outlined text-[18px] text-cat-terracotta">person</span><span class="font-label-sm text-label-sm font-semibold text-text-primary">記録者を選択</span></div></div><div class="flex items-center gap-1.5 overflow-x-auto py-0.5" id="recorderSwitch"><button class="user-btn flex-shrink-0 px-3 py-1.5 rounded-full font-label-sm text-label-sm bg-water-tint text-water-deep shadow-sm transition-all duration-150 flex items-center gap-1.5 border border-primary/20" data-user="user1" type="button"><span class="w-2 h-2 rounded-full bg-water-deep"></span><span class="font-semibold">ママ (みさき)</span><span class="material-symbols-outlined text-[14px]">check</span></button><button class="user-btn flex-shrink-0 px-3 py-1.5 rounded-full font-label-sm text-label-sm bg-surface-subtle text-text-secondary hover:bg-surface-variant transition-all duration-150 flex items-center gap-1.5" data-user="user2" type="button"><span class="w-2 h-2 rounded-full bg-text-tertiary"></span><span class="">パパ (けんた)</span></button><button class="user-btn flex-shrink-0 px-3 py-1.5 rounded-full font-label-sm text-label-sm bg-surface-subtle text-text-secondary hover:bg-surface-variant transition-all duration-150 flex items-center gap-1.5" data-user="user3" type="button"><span class="w-2 h-2 rounded-full bg-text-tertiary"></span><span class="">長女 (さくら)</span></button><button class="user-btn flex-shrink-0 px-3 py-1.5 rounded-full font-label-sm text-label-sm bg-surface-subtle text-text-secondary hover:bg-surface-variant transition-all duration-150 flex items-center gap-1.5" data-user="user4" type="button"><span class="w-2 h-2 rounded-full bg-text-tertiary"></span><span class="">おばあちゃん</span></button><button class="flex-shrink-0 px-2.5 py-1.5 rounded-full font-label-sm text-label-sm bg-surface-subtle text-text-tertiary hover:bg-surface-variant transition-all duration-150 flex items-center gap-1 border border-dashed border-outline-variant" type="button"><span class="material-symbols-outlined text-[16px]">add</span><span class="">追加</span></button></div></div><form class="bg-surface-card rounded-xl p-space-md shadow-sm flex flex-col gap-space-md" id="single-record-form" onsubmit="event.preventDefault(); handleSaveRecord();"><div class="flex flex-col gap-space-xs"><div class="flex items-center justify-between"><label class="font-label-lg text-label-lg text-text-primary flex items-center gap-1.5" for="record-datetime"><span class="material-symbols-outlined text-[18px] text-water-deep">schedule</span><span class="">日時<span class="text-error font-bold ml-1">*</span></span></label><button class="font-label-sm text-label-sm text-water-deep hover:underline flex items-center gap-0.5" onclick="setNowTime()" type="button"><span class="material-symbols-outlined text-[14px]">update</span>現在時刻にする</button></div><div class="bg-surface-subtle rounded-xl px-space-md py-3 flex items-center gap-space-sm"><input class="w-full bg-transparent font-body-md text-body-md text-text-primary focus:outline-none" id="record-datetime" required="" type="datetime-local"></div></div><div class="flex flex-col gap-space-xs"><div class="flex items-center justify-between"><label class="font-label-lg text-label-lg text-text-primary flex items-center gap-1.5" for="intake-amount"><span class="material-symbols-outlined text-[18px] text-water-deep">glass_cup</span><span class="">飲水量<span class="text-error font-bold ml-1">*</span></span></label></div><div class="relative flex items-center bg-surface-subtle rounded-xl px-space-md py-space-sm transition-all focus-within:bg-surface-card focus-within:shadow-md"><input class="w-full bg-transparent font-metric-display text-metric-display text-text-primary focus:outline-none pr-12 text-center" id="intake-amount" max="500" min="1" placeholder="0" required="" step="1" type="number" value="15"><span class="absolute right-4 font-headline-md text-headline-md text-text-secondary select-none">ml</span></div><div class="flex flex-wrap items-center gap-2 pt-space-xs"><button type="button" onclick="addAmount(10)" class="px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high active:scale-95 transition-all text-label-sm font-label-sm font-semibold text-text-primary shadow-xs border border-transparent">+10ml</button><button type="button" onclick="addAmount(20)" class="px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high active:scale-95 transition-all text-label-sm font-label-sm font-semibold text-text-primary shadow-xs border border-transparent">+20ml</button><button type="button" onclick="addAmount(50)" class="px-3.5 py-1.5 rounded-full bg-surface-container hover:bg-surface-container-high active:scale-95 transition-all text-label-sm font-label-sm font-semibold text-text-primary shadow-xs border border-transparent">+50ml</button></div></div><button class="w-full h-12 rounded-full bg-primary-container hover:bg-water-deep active:scale-98 text-on-primary font-headline-sm text-headline-sm flex items-center justify-center gap-2 shadow-md transition duration-150" type="submit"><span class="material-symbols-outlined text-[20px]">check_circle</span>記録を保存する</button></form><div class="fixed bottom-20 left-1/2 -translate-x-1/2 bg-surface-card text-text-primary px-space-md py-space-sm rounded-full shadow-xl flex items-center gap-2 transition-all duration-300 opacity-0 pointer-events-none z-50" id="toast-success"><span class="material-symbols-outlined text-[20px] text-water-deep">check_circle</span><span class="font-label-md text-label-md" id="toast-message">飲水量 15ml を記録しました</span></div></div>
+<script>
+  (function initSingleRecordView() {
+    const inputAmount = document.getElementById('intake-amount');
+    const inputDatetime = document.getElementById('record-datetime');
+    const inputMemo = document.getElementById('record-memo');
+    const toast = document.getElementById('toast-success');
+    const toastMsg = document.getElementById('toast-message');
+    const recordsContainer = document.getElementById('recent-records-list');
+    const todayBadge = document.getElementById('today-total-badge');
+
+    // Format Date to YYYY-MM-DDTHH:mm for datetime-local input
+    function getLocalDateTimeString(date) {
+      const pad = (n) => String(n).padStart(2, '0');
+      const y = date.getFullYear();
+      const m = pad(date.getMonth() + 1);
+      const d = pad(date.getDate());
+      const h = pad(date.getHours());
+      const min = pad(date.getMinutes());
+      return `${y}-${m}-${d}T${h}:${min}`;
+    }
+
+    window.setNowTime = function() {
+      inputDatetime.value = getLocalDateTimeString(new Date());
+    };
+
+    setNowTime();
+
+    window.addAmount = function(val) {
+      const cur = parseInt(inputAmount.value, 10) || 0;
+      inputAmount.value = cur + val;
+      inputAmount.focus();
+    };
+
+    window.clearAmount = function() {
+      inputAmount.value = '';
+      inputAmount.focus();
+    };
+
+    window.selectPreset = function(text) {
+      if (inputMemo.value && !inputMemo.value.includes(text)) {
+        inputMemo.value = text + ' ' + inputMemo.value;
+      } else if (!inputMemo.value) {
+        inputMemo.value = text;
+      }
+      inputMemo.focus();
+    };
+
+    function showToast(text) {
+      toastMsg.textContent = text;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    let todayTotal = 35;
+
+    window.handleSaveRecord = function() {
+      const amount = parseInt(inputAmount.value, 10);
+      if (!amount || amount <= 0) return;
+
+      const dateVal = new Date(inputDatetime.value || new Date());
+      const hours = String(dateVal.getHours()).padStart(2, '0');
+      const mins = String(dateVal.getMinutes()).padStart(2, '0');
+      const timeStr = `今日 ${hours}:${mins}`;
+
+      const memoText = inputMemo.value.trim() || 'シリンジ直接給水';
+
+      // Insert new element to recent records feed
+      const newCard = document.createElement('div');
+      newCard.className = 'bg-surface-card rounded-xl p-space-md flex items-center justify-between shadow-xs transition hover:shadow-sm animate-pulse';
+      newCard.innerHTML = `
+        <div class="flex items-center gap-space-sm min-w-0">
+          <div class="w-9 h-9 rounded-full bg-water-tint flex items-center justify-center text-water-deep flex-shrink-0">
+            <span class="material-symbols-outlined text-[18px]">water_drop</span>
+          </div>
+          <div class="flex flex-col min-w-0">
+            <div class="flex items-center gap-2">
+              <span class="font-label-lg text-label-lg text-text-primary">${timeStr}</span>
+              <span class="px-2 py-0.5 rounded-full bg-surface-subtle font-label-sm text-label-sm text-text-secondary truncate">個別記録</span>
+            </div>
+            <span class="font-body-sm text-body-sm text-text-secondary truncate">${memoText}</span>
+          </div>
+        </div>
+        <div class="flex flex-col items-end flex-shrink-0 pl-2">
+          <span class="font-headline-md text-headline-md text-water-deep font-bold">${amount}<span class="text-label-sm text-text-secondary font-normal ml-0.5">ml</span></span>
+          <span class="font-label-sm text-label-sm text-text-tertiary">記録: ママ</span>
+        </div>
+      `;
+
+      recordsContainer.insertBefore(newCard, recordsContainer.firstChild);
+
+      // Remove pulse after brief delight indicator
+      setTimeout(() => {
+        newCard.classList.remove('animate-pulse');
+      }, 700);
+
+      // Update today's total
+      todayTotal += amount;
+      todayBadge.textContent = `${todayTotal} ml`;
+
+      // Show toast and reset form values gracefully
+      showToast(`飲水量 ${amount}ml を記録しました！🐾`);
+      inputAmount.value = '15';
+      inputMemo.value = '';
+      setNowTime();
+    };
+  })();
+</script></main><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface/85 backdrop-blur-xl shadow-[0_-4px_16px_rgba(120,113,108,0.08)]" data-active-classes="text-primary font-semibold"><div class="h-16 max-w-screen-md mx-auto px-space-xs grid grid-cols-4 items-center"><a class="flex flex-col items-center justify-center gap-0.5 h-full min-w-[44px] min-h-[44px] text-text-secondary transition-colors duration-150 active:scale-95" data-path="home" href="#"><span class="material-symbols-outlined text-[24px]">water_drop</span><span class="font-label-sm text-label-sm">ホーム</span></a><a class="flex flex-col items-center justify-center gap-0.5 h-full min-w-[44px] min-h-[44px] text-text-secondary transition-colors duration-150 active:scale-95" data-path="bowl-record" href="#"><span class="material-symbols-outlined text-[24px]">bathtub</span><span class="font-label-sm text-label-sm">水皿交換</span></a><a aria-current="page" class="flex flex-col items-center justify-center gap-0.5 h-full min-w-[44px] min-h-[44px] transition-colors duration-150 active:scale-95 text-primary font-semibold" data-path="single-record" href="#"><span class="material-symbols-outlined text-[24px]">edit_note</span><span class="font-label-sm text-label-sm">個別給水</span></a><a class="flex flex-col items-center justify-center gap-0.5 h-full min-w-[44px] min-h-[44px] text-text-secondary transition-colors duration-150 active:scale-95" data-path="bowl-management" href="#"><span class="material-symbols-outlined text-[24px]">tune</span><span class="font-label-sm text-label-sm">水皿管理</span></a></div></nav>
+
+
+
+
+
+</body></html>
