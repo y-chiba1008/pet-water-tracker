@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { signInWithGoogle } from '@/features/auth/api/authRepository'
 import { Button } from '@/components/ui/button'
+import googleGLogoLight from '@/assets/google-g-logo-light.svg'
 
 export function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -32,12 +33,20 @@ export function LoginPage() {
 
         <Button
           type="button"
+          variant="outline"
           size="lg"
-          className="w-full"
+          className="h-14 w-full gap-3 rounded-full border-[#747775] bg-white text-[#1F1F1F] hover:bg-muted hover:text-[#1F1F1F]"
           disabled={isSubmitting}
           onClick={() => void handleGoogleLogin()}
         >
-          {isSubmitting ? 'リダイレクト中…' : 'Googleでログイン'}
+          <img
+            src={googleGLogoLight}
+            alt=""
+            width={20}
+            height={20}
+            className="size-5"
+          />
+          {isSubmitting ? 'リダイレクト中…' : 'Google でログイン'}
         </Button>
 
         {errorMessage ? (
