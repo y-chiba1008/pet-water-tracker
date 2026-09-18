@@ -11,6 +11,11 @@ export default defineConfig({
       '@': path.resolve(import.meta.dirname, './src'),
     },
   },
+  server: {
+    // supabase/config.toml の site_url と揃える（OAuth リダイレクト用）
+    port: 3000,
+    strictPort: true,
+  },
   test: {
     globals: true,
     environment: 'node',

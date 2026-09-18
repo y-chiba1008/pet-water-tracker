@@ -36,6 +36,8 @@
 
 詳細は `docs/design-guidelines.md` を参照。要点は以下のとおり。
 
+※ 画面のビジュアルデザイン（色・タイポ・レイアウトなど）は `DESIGN.md` を参照。`docs/design-guidelines.md` はコード設計の指針。
+
 ### Repository パターン（データアクセス層の分離）
 
 Supabaseへのクエリはコンポーネント・hookに直書きせず、`api/xxxRepository.ts` に集約する。
@@ -250,11 +252,37 @@ pnpm exec supabase gen types typescript --local > src/shared/types/database.ts
 - React Hook Form + Zod のセットで実装する
 - スキーマ定義（`z.object(...)`）はコンポーネントファイルの外に切り出す
 
-### スタイリング
+### スタイリング / UIデザイン
+
+画面の見た目・レイアウト・カラー・タイポグラフィなどは **`DESIGN.md` に従う**（カラーパレット、フォント、コンポーネント方針、Do/Don't など）。
 
 - Tailwind CSS のユーティリティクラスを使用
 - shadcn/ui のコンポーネントを積極的に活用する
 - クラス名の結合には `cn()` ユーティリティを使用する
+- 色・余白・角丸・影などは `DESIGN.md` のトークン・指針に合わせる（独自の見た目を増やさない）
+
+### Git / ブランチ命名
+
+Issue に紐づく作業では、ブランチ名を `<プレフィックス>/#<issue番号>_<短い説明>` の形式にする。
+
+プレフィックスは作業内容に応じて使い分ける（よく使われるもの）:
+
+| プレフィックス | 用途 |
+|---|---|
+| `feature` | 新機能の追加 |
+| `fix` | バグ修正 |
+| `hotfix` | 本番向けの緊急修正 |
+| `refactor` | 挙動を変えずに内部構造を整理・改善 |
+| `chore` | ビルド設定・依存関係・雑務などプロダクト機能外の変更 |
+| `docs` | ドキュメントのみの変更 |
+| `test` | テストの追加・修正 |
+| `ci` | CI/CD 設定の変更 |
+
+例:
+
+- `feature/#1_sample_branch`
+- `fix/#12_login_redirect`
+- `docs/#3_update_agents_md`
 
 ---
 
