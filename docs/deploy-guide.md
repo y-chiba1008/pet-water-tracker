@@ -44,6 +44,17 @@ supabase db push
 | `SUPABASE_DB_PASSWORD` | プロジェクト作成時に設定したDBパスワード |
 | `SUPABASE_PROJECT_ID` | プロジェクトのReference ID（Project Settings → General） |
 
+`SUPABASE_ACCESS_TOKEN` にスコープ付きトークン（`sbp_fc` で始まる）を使う場合、権限が足りないと `supabase link` が 403 `Your account does not have the necessary privileges to access this endpoint.` で失敗する。Resource access は Project スコープで対象プロジェクトのみ選べばよく、権限は `link` が呼ぶ以下のエンドポイント分を Read で付ける。
+
+| エンドポイント | 必要な権限（Read） |
+|---|---|
+| `GET /v1/projects/{ref}` | Project Settings |
+| `GET /v1/projects/{ref}/api-keys` | API Keys / API Key Secrets |
+| `GET /v1/projects/{ref}/config/storage` | Storage Config |
+| `GET /v1/projects/{ref}/config/database/pooler` | Connection Pooling |
+
+`migration list` と `db push` は Management API を使わず `SUPABASE_DB_PASSWORD` でPostgresに直接接続するため、追加の権限は不要。CLIのバージョンアップで参照先が増える可能性があるので、権限を絞ったトークンはSecretに入れる前にローカルの `supabase link` で試すとよい。
+
 Repository secrets ではなく Environment secrets に置くこと。Environment secrets は `environment: production` を宣言したジョブからのみ参照でき、かつ承認前には注入されないため、本番DBの認証情報が他のワークフローから読めてしまう事故を防げる。
 
 これでマージ後にワークフローが承認待ちで停止し、Actions画面から **Review deployments → Approve and deploy** を押すと適用される。
