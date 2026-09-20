@@ -53,7 +53,23 @@ supabase db push
 | `GET /v1/projects/{ref}/config/storage` | Storage Config |
 | `GET /v1/projects/{ref}/config/database/pooler` | Connection Pooling |
 
-`migration list` と `db push` は Management API を使わず `SUPABASE_DB_PASSWORD` でPostgresに直接接続するため、追加の権限は不要。CLIのバージョンアップで参照先が増える可能性があるので、権限を絞ったトークンはSecretに入れる前にローカルの `supabase link` で試すとよい。
+`migration list` と `db push` は Management API を使わず `SUPABASE_DB_PASSWORD` でPostgresに直接接続するため、追加の権限は不要。CLIのバージョンアップで参照先が増える可能性があるので、権限を絞ったトークンはSecretに入れる前に下記の手順でローカル検証しておくとよい。
+
+#### 2.2.2 トークンの権限をローカルで検証する
+
+`supabase` CLI は環境変数 `SUPABASE_ACCESS_TOKEN` があればそちらを優先し、`supabase login` で保存済みのトークン（`~/.supabase/access-token`）を使わない。これを利用して、CI用トークンと同じ条件をローカルで再現できる。
+
+```bash
+# シェル履歴に残さないよう、プロンプト入力で読み込む
+read -rs -p "token: " SUPABASE_ACCESS_TOKEN && export SUPABASE_ACCESS_TOKEN
+
+# CIと同じコマンドを --debug 付きで実行し、叩いたエンドポイントを確認する
+pnpm exec supabase link --project-ref <プロジェクトref> --debug
+```
+
+- 成功すれば `Finished supabase link.` で終わる。権限が足りない場合は、直前に出力された `HTTP GET: https://api.supabase.com/...` が不足している権限の該当エンドポイント
+- 検証が終わったら `unset SUPABASE_ACCESS_TOKEN` する。以降は通常どおり `supabase login` のトークンが使われる
+- `link` はリンク先を `supabase/.temp/` に記録する（gitignore済み）。同じプロジェクトにリンクし直すだけなので通常の開発には影響しない
 
 Repository secrets ではなく Environment secrets に置くこと。Environment secrets は `environment: production` を宣言したジョブからのみ参照でき、かつ承認前には注入されないため、本番DBの認証情報が他のワークフローから読めてしまう事故を防げる。
 
