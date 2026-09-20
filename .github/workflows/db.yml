@@ -1,0 +1,46 @@
+name: DB Check
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/**'
+      - 'src/shared/types/database.ts'
+      - 'scripts/check-splinter.sh'
+      - 'scripts/check-gen-types.sh'
+      - '.github/workflows/db.yml'
+
+concurrency:
+  group: db-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  db:
+    runs-on: ubuntu-latest
+    # config.toml が env(...) で参照するため、値の中身は問わないがダミーを渡す必要がある
+    env:
+      GOOGLE_CLIENT_ID: dummy-client-id
+      GOOGLE_CLIENT_SECRET: dummy-client-secret
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # 検証に不要なサービスは除外して起動時間を抑える
+      - name: Supabase 起動
+        run: pnpm exec supabase start -x studio,imgproxy,edge-runtime,logflare,vector,mailpit
+
+      - name: マイグレーション適用
+        run: pnpm exec supabase db reset
+
+      - name: splinter
+        run: pnpm splinter
+
+      - name: 型定義がマイグレーションと一致するか確認
+        run: pnpm check-gen-types
