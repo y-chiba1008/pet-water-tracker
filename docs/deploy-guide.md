@@ -28,7 +28,15 @@ supabase db push
 
 `supabase/migrations/**` を含む変更が `main` にマージされると `DB Deploy` ワークフローが起動し、承認後にリモートへ `db push` する。
 
-**必要な GitHub Secrets**
+**セットアップ手順**
+
+マイグレーションはロールバックできないため、Environment による承認を必須にしている。
+
+1. GitHubリポジトリ → Settings → Environments → **New environment** で `production` を作成
+2. **Required reviewers** に自分（および家族アカウント）を追加
+   - **Prevent self-review はオフのまま**にする。レビュアーが1人だけの場合、オンにすると誰も承認できずデプロイが止まる
+   - **Allow administrators to bypass** はオフにする（承認をスキップできてしまうため）
+3. 同じ Environment の画面で **Environment secrets** として以下を登録する
 
 | Secret | 取得元 |
 |---|---|
@@ -36,13 +44,7 @@ supabase db push
 | `SUPABASE_DB_PASSWORD` | プロジェクト作成時に設定したDBパスワード |
 | `SUPABASE_PROJECT_ID` | プロジェクトのReference ID（Project Settings → General） |
 
-**承認ゲートの設定**
-
-マイグレーションはロールバックできないため、Environment による承認を必須にしている。
-
-1. GitHubリポジトリ → Settings → Environments → **New environment** で `production` を作成
-2. **Required reviewers** に自分（および家族アカウント）を追加
-3. Secrets は Environment 側ではなくリポジトリの Secrets に登録しておけばよい（Environment 側に置いても動く）
+Repository secrets ではなく Environment secrets に置くこと。Environment secrets は `environment: production` を宣言したジョブからのみ参照でき、かつ承認前には注入されないため、本番DBの認証情報が他のワークフローから読めてしまう事故を防げる。
 
 これでマージ後にワークフローが承認待ちで停止し、Actions画面から **Review deployments → Approve and deploy** を押すと適用される。
 
