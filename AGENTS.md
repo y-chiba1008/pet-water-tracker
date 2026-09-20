@@ -243,8 +243,11 @@ pnpm check-gen-types
 |---|---|---|
 | `.github/workflows/ci.yml` | PR全般 / `main` への push | `pnpm lint` → `pnpm test:run` → `pnpm build`（`tsc -b` 込み） |
 | `.github/workflows/db.yml` | `supabase/**` などを含む PR | ローカル Supabase を起動して `db reset` → `pnpm splinter` → `pnpm check-gen-types` |
+| `.github/workflows/db-deploy.yml` | `supabase/migrations/**` を含む `main` への push | 承認後に `supabase link` → `supabase db push` でリモートへマイグレーション適用 |
 
 - `db.yml` の型定義チェックがあるため、マイグレーションを変更したら `pnpm gen-types` の結果を必ずコミットする
+- `db-deploy.yml` は GitHub Environment `production` の承認待ちで停止する。Secrets は `SUPABASE_ACCESS_TOKEN` / `SUPABASE_DB_PASSWORD` / `SUPABASE_PROJECT_ID` が必要
+- `db push` はマイグレーションのみを反映する。`config.toml` の認証設定は自動化せず、ダッシュボードで手動設定する（`docs/deploy-guide.md` 参照）
 - 依存更新は `.github/dependabot.yml` で週次（minor / patch はグループ化）
 
 ---

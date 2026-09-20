@@ -22,6 +22,32 @@ supabase link --project-ref <プロジェクトref>
 supabase db push
 ```
 
+初回はこの手順で反映する。以降は `main` へのマージ時に `.github/workflows/db-deploy.yml` が自動で `db push` するため、手動実行は不要（詳細は下記2.2.1）。
+
+#### 2.2.1 マイグレーションの自動適用（GitHub Actions）
+
+`supabase/migrations/**` を含む変更が `main` にマージされると `DB Deploy` ワークフローが起動し、承認後にリモートへ `db push` する。
+
+**セットアップ手順**
+
+マイグレーションはロールバックできないため、Environment による承認を必須にしている。
+
+1. GitHubリポジトリ → Settings → Environments → **New environment** で `production` を作成
+2. **Required reviewers** に自分（および家族アカウント）を追加
+   - **Prevent self-review はオフのまま**にする。レビュアーが1人だけの場合、オンにすると誰も承認できずデプロイが止まる
+   - **Allow administrators to bypass** はオフにする（承認をスキップできてしまうため）
+3. 同じ Environment の画面で **Environment secrets** として以下を登録する
+
+| Secret | 取得元 |
+|---|---|
+| `SUPABASE_ACCESS_TOKEN` | Supabaseダッシュボード → Account → Access Tokens で発行 |
+| `SUPABASE_DB_PASSWORD` | プロジェクト作成時に設定したDBパスワード |
+| `SUPABASE_PROJECT_ID` | プロジェクトのReference ID（Project Settings → General） |
+
+Repository secrets ではなく Environment secrets に置くこと。Environment secrets は `environment: production` を宣言したジョブからのみ参照でき、かつ承認前には注入されないため、本番DBの認証情報が他のワークフローから読めてしまう事故を防げる。
+
+これでマージ後にワークフローが承認待ちで停止し、Actions画面から **Review deployments → Approve and deploy** を押すと適用される。
+
 ### 2.3 Google OAuth設定
 1. Google Cloud ConsoleでOAuthクライアントID（ウェブアプリケーション種別）を作成
 2. 承認済みリダイレクトURIに以下を登録
@@ -103,4 +129,4 @@ Renderが発行する本番URL（独自ドメインを使う場合はそちら�
 | `auth.email.enable_signup = true`（トップレベルと矛盾） | 本番ではEmailプロバイダ自体を無効化（推奨） |
 | （config.toml側に対応項目なし） | Leaked Password Protection（今回はスルー） |
 | （config.toml側に対応項目なし） | ユーザー2名の手動作成 |
-| DBスキーマ・RLSポリシー・`is_authorized`関数 | `supabase db push`で反映されるため、ダッシュボードでの個別設定は不要 |
+| DBスキーマ・RLSポリシー・`is_authorized`関数 | `supabase db push`で反映されるため、ダッシュボードでの個別設定は不要（`main`へのマージ時に`DB Deploy`ワークフローが自動実行） |
