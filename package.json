@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
+  "packageManager": "pnpm@11.9.0",
   "scripts": {
     "dev": "vite",
     "start-supabase": "vite",
@@ -12,7 +13,9 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:run": "vitest run",
-    "splinter": "curl -sL \"https://raw.githubusercontent.com/supabase/splinter/main/splinter.sql\" | psql \"$(supabase status -o env | grep '^DB_URL=' | cut -d= -f2- | tr -d '\"')\" --csv",
+    "splinter": "bash scripts/check-splinter.sh",
+    "gen-types": "supabase gen types typescript --local > src/shared/types/database.ts",
+    "check-gen-types": "bash scripts/check-gen-types.sh",
     "seed-users": "tsx scripts/seed-users.ts"
   },
   "dependencies": {

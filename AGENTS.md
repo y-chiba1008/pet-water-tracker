@@ -225,11 +225,27 @@ pnpm lint
 
 # DBアドバイス（splinter）
 # ※ supabase-cli のバンドル版は古いため、最新版を GitHub から直接取得して実行している
+# WARN / ERROR、または SECURITY カテゴリの指摘があれば異常終了する
 pnpm splinter
 
 # Supabase 型定義を生成（shared/types/database.ts に出力）
-pnpm exec supabase gen types typescript --local > src/shared/types/database.ts
+pnpm gen-types
+
+# 生成済み型定義がマイグレーションと一致しているか検証
+pnpm check-gen-types
 ```
+
+---
+
+## CI（GitHub Actions）
+
+| ワークフロー | トリガー | 内容 |
+|---|---|---|
+| `.github/workflows/ci.yml` | PR全般 / `main` への push | `pnpm lint` → `pnpm test:run` → `pnpm build`（`tsc -b` 込み） |
+| `.github/workflows/db.yml` | `supabase/**` などを含む PR | ローカル Supabase を起動して `db reset` → `pnpm splinter` → `pnpm check-gen-types` |
+
+- `db.yml` の型定義チェックがあるため、マイグレーションを変更したら `pnpm gen-types` の結果を必ずコミットする
+- 依存更新は `.github/dependabot.yml` で週次（minor / patch はグループ化）
 
 ---
 
