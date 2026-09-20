@@ -32,12 +32,8 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # link の認可エラー切り分け用。トークンから見えるプロジェクトが0件ならアカウント違い
-      - name: アクセストークンから見えるプロジェクトを表示
-        run: pnpm exec supabase projects list --debug
-
       - name: リモートプロジェクトに接続
-        run: pnpm exec supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }} --debug
+        run: pnpm exec supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
 
       # 適用前に差分を出しておく（失敗時の調査用）
       - name: 適用予定のマイグレーションを表示
