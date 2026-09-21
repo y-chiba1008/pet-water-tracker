@@ -29,16 +29,17 @@ import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 
 const END_PRESETS = [
-  { label: '0ml (飲みきり)', value: 0 },
-  { label: '40ml', value: 40 },
-  { label: '80ml', value: 80 },
-  { label: '120ml', value: 120 },
+  { label: '50ml', value: 50 },
+  { label: '100ml', value: 100 },
+  { label: '150ml', value: 150 },
+  { label: '200ml', value: 200 },
 ] as const
 
 const START_PRESETS = [
+  { label: '150ml', value: 150 },
   { label: '200ml', value: 200 },
-  { label: '250ml (標準)', value: 250 },
-  { label: '300ml (多め)', value: 300 },
+  { label: '250ml', value: 250 },
+  { label: '300ml', value: 300 },
 ] as const
 
 type BowlRecordFormProps = {
