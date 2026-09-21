@@ -12,7 +12,6 @@ const navItems = [
     label: '水皿交換',
     icon: Bath,
     end: false,
-    disabled: true,
   },
   {
     to: '/individual-records',
