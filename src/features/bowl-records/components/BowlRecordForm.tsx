@@ -1,8 +1,7 @@
-import type { ComponentProps } from 'react'
 import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckCircle2, Clock3, CupSoda, RefreshCw } from 'lucide-react'
+import { CupSoda } from 'lucide-react'
 import {
   calcWaterAmount,
   checkRecordedAtConsistency,
@@ -13,19 +12,19 @@ import { AbnormalValueWarning } from '@/features/bowl-records/components/Abnorma
 import {
   createActiveCycleFormSchema,
   createNoActiveCycleFormSchema,
-  setAmountValueAs,
   type ActiveCycleFormValues,
   type NoActiveCycleFormValues,
 } from '@/features/bowl-records/lib/bowlRecordFormSchema'
+import type { BowlFormState, BowlRecord } from '@/features/bowl-records/types'
+import { AmountField } from '@/shared/components/AmountField'
+import { DateTimeField } from '@/shared/components/DateTimeField'
+import { RecordSubmitButton } from '@/shared/components/RecordSubmitButton'
 import {
   formatClockTime,
   formatElapsedLabel,
   toDateTimeLocalValue,
-} from '@/features/bowl-records/lib/dateTime'
-import type { BowlFormState, BowlRecord } from '@/features/bowl-records/types'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@/shared/lib/dateTime'
+import { setAmountValueAs } from '@/shared/lib/setAmountValueAs'
 import { cn } from '@/lib/utils'
 
 const END_PRESETS = [
@@ -172,7 +171,7 @@ function NoActiveCycleForm({
         </p>
       ) : null}
 
-      <SubmitButton isSubmitting={isSubmitting} disabled={!canSubmit} />
+      <RecordSubmitButton isSubmitting={isSubmitting} disabled={!canSubmit} />
     </form>
   )
 }
@@ -342,7 +341,7 @@ function ActiveCycleForm({
         </p>
       ) : null}
 
-      <SubmitButton isSubmitting={isSubmitting} disabled={!canSubmit} />
+      <RecordSubmitButton isSubmitting={isSubmitting} disabled={!canSubmit} />
     </form>
   )
 }
@@ -406,154 +405,5 @@ function StatusBanner(props: StatusBannerProps) {
         </p>
       </div>
     </div>
-  )
-}
-
-type DateTimeFieldProps = {
-  id: string
-  error?: string
-  helperText?: string
-  onSetNow: () => void
-} & ComponentProps<'input'>
-
-function DateTimeField({
-  id,
-  error,
-  helperText,
-  onSetNow,
-  ...inputProps
-}: DateTimeFieldProps) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <div className="flex items-center justify-between gap-2">
-        <Label
-          htmlFor={id}
-          className="flex items-center gap-1.5 text-sm font-semibold text-[#292524]"
-        >
-          <Clock3 className="size-[18px] text-[#0284C7]" strokeWidth={2} />
-          日時 <span className="font-bold text-[#ba1a1a]">*</span>
-        </Label>
-        <button
-          type="button"
-          className="flex items-center gap-0.5 text-xs text-[#0284C7] hover:underline"
-          onClick={onSetNow}
-        >
-          <RefreshCw className="size-3.5" strokeWidth={2} />
-          現在時刻にする
-        </button>
-      </div>
-      <div className="rounded-xl bg-[#F5EFEB] px-4 py-3">
-        <Input
-          id={id}
-          type="datetime-local"
-          className="h-auto border-0 bg-transparent p-0 text-base text-[#292524] shadow-none focus-visible:ring-0"
-          aria-invalid={Boolean(error)}
-          {...inputProps}
-        />
-      </div>
-      {error ? (
-        <p className="text-xs text-destructive" role="alert">
-          {error}
-        </p>
-      ) : helperText ? (
-        <p className="text-xs leading-tight text-[#A8A29E]">{helperText}</p>
-      ) : null}
-    </div>
-  )
-}
-
-type AmountFieldProps = {
-  id: string
-  label: string
-  required: boolean
-  unitAccent: 'water' | 'terracotta'
-  error?: string
-  helperText?: string
-  presets: readonly { label: string; value: number }[]
-  onPreset: (value: number) => void
-} & ComponentProps<'input'>
-
-function AmountField({
-  id,
-  label,
-  required,
-  unitAccent,
-  error,
-  helperText,
-  presets,
-  onPreset,
-  ...inputProps
-}: AmountFieldProps) {
-  return (
-    <div className="flex flex-col gap-2">
-      <Label
-        htmlFor={id}
-        className="flex items-center gap-1.5 text-sm font-semibold text-[#292524]"
-      >
-        <CupSoda
-          className={cn(
-            'size-[18px]',
-            unitAccent === 'water' ? 'text-[#0284C7]' : 'text-[#EA580C]',
-          )}
-          strokeWidth={2}
-        />
-        {label}
-        {required ? <span className="font-bold text-[#ba1a1a]">*</span> : null}
-      </Label>
-      <div className="relative flex items-center rounded-xl bg-[#F5EFEB] px-4 py-2 transition-all focus-within:bg-white focus-within:shadow-md">
-        <Input
-          id={id}
-          type="number"
-          inputMode="numeric"
-          min={0}
-          step={1}
-          placeholder="0"
-          className="h-12 border-0 bg-transparent p-0 pr-12 text-center font-heading text-[32px] leading-[38px] font-bold tracking-tight text-[#292524] shadow-none focus-visible:ring-0 md:text-[32px]"
-          aria-invalid={Boolean(error)}
-          {...inputProps}
-        />
-        <span className="pointer-events-none absolute right-4 font-heading text-xl font-semibold text-[#78716C]">
-          ml
-        </span>
-      </div>
-      {error ? (
-        <p className="text-xs text-destructive" role="alert">
-          {error}
-        </p>
-      ) : helperText ? (
-        <p className="text-xs text-[#78716C]">{helperText}</p>
-      ) : null}
-      <div className="flex flex-wrap gap-2">
-        {presets.map((preset) => (
-          <button
-            key={preset.value}
-            type="button"
-            className="rounded-full border border-transparent bg-[#eaeef4] px-3.5 py-1.5 text-xs font-semibold text-[#292524] transition-all hover:bg-[#e4e8ee] active:scale-95"
-            onClick={() => onPreset(preset.value)}
-          >
-            {preset.label}
-          </button>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function SubmitButton({
-  isSubmitting,
-  disabled = false,
-}: {
-  isSubmitting: boolean
-  disabled?: boolean
-}) {
-  return (
-    <Button
-      type="submit"
-      disabled={isSubmitting || disabled}
-      className="h-12 w-full gap-2 rounded-full bg-[#0EA5E9] text-base font-semibold text-white shadow-[0_4px_14px_rgba(14,165,233,0.25)] hover:bg-[#0284C7] disabled:opacity-50"
-    >
-      <CheckCircle2 className="size-5" strokeWidth={2} />
-      {isSubmitting ? '保存中…' : '記録を保存する'}
-    </Button>
   )
 }

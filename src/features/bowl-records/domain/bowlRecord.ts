@@ -1,4 +1,4 @@
-import { truncateToMinute } from '@/features/bowl-records/lib/dateTime'
+import { truncateToMinute } from '@/shared/lib/dateTime'
 import type { BowlRecord } from '@/features/bowl-records/types'
 
 /** 1サイクルの飲水量（開始容量 − 終了容量） */

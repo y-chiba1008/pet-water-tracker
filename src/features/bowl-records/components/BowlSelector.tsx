@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 import type { Bowl } from '@/features/bowls/types'
 import type { BowlRecord } from '@/features/bowl-records/types'
-import { formatClockTime } from '@/features/bowl-records/lib/dateTime'
+import { formatClockTime } from '@/shared/lib/dateTime'
 import { Droplets, GlassWater } from 'lucide-react'
 
 type BowlSelectorProps = {

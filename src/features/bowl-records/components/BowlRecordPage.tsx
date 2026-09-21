@@ -8,7 +8,7 @@ import {
   useInsertStartRecord,
   useUpdateEndRecord,
 } from '@/features/bowl-records/hooks/useBowlRecordMutations'
-import { dateTimeLocalToIso } from '@/features/bowl-records/lib/dateTime'
+import { dateTimeLocalToIso } from '@/shared/lib/dateTime'
 import type {
   ActiveCycleFormValues,
   NoActiveCycleFormValues,

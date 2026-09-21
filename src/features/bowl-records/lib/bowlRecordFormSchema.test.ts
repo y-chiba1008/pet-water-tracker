@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   createActiveCycleFormSchema,
   createNoActiveCycleFormSchema,
-  setAmountValueAs,
 } from '@/features/bowl-records/lib/bowlRecordFormSchema'
 
 const now = new Date('2026-09-21T12:00:00')
@@ -125,18 +124,5 @@ describe('createActiveCycleFormSchema', () => {
       endAmountMl: 80,
     })
     expect(result.success).toBe(false)
-  })
-})
-
-describe('setAmountValueAs', () => {
-  it('converts empty values to undefined', () => {
-    expect(setAmountValueAs('')).toBeUndefined()
-    expect(setAmountValueAs(Number.NaN)).toBeUndefined()
-    expect(setAmountValueAs(undefined)).toBeUndefined()
-  })
-
-  it('parses numeric strings and numbers', () => {
-    expect(setAmountValueAs('120')).toBe(120)
-    expect(setAmountValueAs(40)).toBe(40)
   })
 })
