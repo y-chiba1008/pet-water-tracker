@@ -2,9 +2,9 @@ import { Navigate, Route, Routes } from 'react-router'
 import {
   GuestOnly,
   RequireAuth,
-} from '@/features/auth/components/AuthGuard'
-import { HomePlaceholderPage } from '@/features/auth/components/HomePlaceholderPage'
-import { LoginPage } from '@/features/auth/components/LoginPage'
+} from '@/features/login/components/AuthGuard'
+import { HomePlaceholderPage } from '@/features/login/components/HomePlaceholderPage'
+import { LoginPage } from '@/features/login/components/LoginPage'
 import { BowlListPage } from '@/features/bowls/components/BowlListPage'
 
 export function AppRoutes() {

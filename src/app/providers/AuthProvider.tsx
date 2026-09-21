@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useState, type ReactNode } from 'react'
-import { getSession } from '@/features/auth/api/authRepository'
-import { AuthContext } from '@/features/auth/hooks/authContext'
+import { getSession } from '@/features/login/api/authRepository'
+import { AuthContext } from '@/features/login/hooks/authContext'
 import { supabase } from '@/shared/lib/supabaseClient'
 import type { Session } from '@supabase/supabase-js'
 

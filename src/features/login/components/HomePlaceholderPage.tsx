@@ -1,5 +1,5 @@
 import { Link } from 'react-router'
-import { useAuth } from '@/features/auth/hooks/useAuth'
+import { useAuth } from '@/features/login/hooks/useAuth'
 import { AppShell } from '@/shared/components/AppShell'
 import { Button } from '@/components/ui/button'
 

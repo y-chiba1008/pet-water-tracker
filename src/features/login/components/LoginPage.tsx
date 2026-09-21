@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
-import { signInWithGoogle } from '@/features/auth/api/authRepository'
+import { signInWithGoogle } from '@/features/login/api/authRepository'
 import {
   parseAuthCallbackError,
   toLoginErrorMessage,
-} from '@/features/auth/lib/authCallbackError'
+} from '@/features/login/lib/authCallbackError'
 import { Button } from '@/components/ui/button'
 import googleGLogoLight from '@/assets/google-g-logo-light.svg'
 import logo from '@/assets/logo.png'
