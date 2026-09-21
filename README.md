@@ -123,15 +123,16 @@ pet-water-tracker/
 ├── src/
 │   ├── app/                     # ルーティング・プロバイダ
 │   ├── features/
-│   │   ├── auth/                # 認証
+│   │   ├── login/               # ログイン・セッション関連
 │   │   ├── bowls/               # 水皿管理
 │   │   ├── bowl-records/        # 水皿記録（components / hooks / api / domain）
 │   │   ├── individual-records/  # 個別記録
 │   │   └── visualization/       # ホーム画面（カレンダー・グラフ）
 │   ├── shared/
-│   │   ├── components/ui/       # shadcn/ui コンポーネント
+│   │   ├── components/          # AppShell / UserMenu など共通 UI
 │   │   ├── lib/
-│   │   │   └── supabaseClient.ts
+│   │   │   ├── supabaseClient.ts
+│   │   │   └── getAvatarUrl.ts
 │   │   └── types/
 │   │       └── database.ts      # Supabase CLIで生成した型定義
 │   └── main.tsx

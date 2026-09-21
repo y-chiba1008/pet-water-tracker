@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   parseAuthCallbackError,
   toLoginErrorMessage,
-} from '@/features/auth/lib/authCallbackError'
+} from '@/features/login/lib/authCallbackError'
 
 describe('parseAuthCallbackError', () => {
   it('returns null when no auth error params exist', () => {

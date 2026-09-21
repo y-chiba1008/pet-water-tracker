@@ -100,7 +100,7 @@ src/
 │       └── QueryProvider.tsx          # TanStack Query設定
 │
 ├── features/
-│   ├── auth/
+│   ├── login/                         # ログイン・セッション関連
 │   ├── bowls/                         # 水皿管理
 │   ├── bowl-records/                  # 水皿記録
 │   │   ├── domain/
@@ -115,9 +115,12 @@ src/
 │           └── summaryRepository.ts   # bowl_records + individual_records から集計
 │
 ├── shared/
-│   ├── components/ui/                 # shadcn/ui コンポーネント
+│   ├── components/
+│   │   ├── AppShell.tsx               # 共通ヘッダ・フッタ
+│   │   └── UserMenu.tsx               # アカウントメニュー（アバター・ログアウト）
 │   ├── lib/
-│   │   └── supabaseClient.ts          # Supabase クライアント
+│   │   ├── supabaseClient.ts          # Supabase クライアント
+│   │   └── getAvatarUrl.ts            # Google アバター URL 取得
 │   └── types/
 │       └── database.ts                # Supabase CLIで生成した型定義
 │
