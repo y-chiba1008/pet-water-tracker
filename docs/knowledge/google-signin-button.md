@@ -67,7 +67,7 @@ src/assets/
 └── google-g-logo-dark.svg     # 予備（Dark ボタン用）
 ```
 
-実装箇所: `src/features/auth/components/LoginPage.tsx`
+実装箇所: `src/features/login/components/LoginPage.tsx`
 
 ### ボタンスタイルの要点（Light）
 

@@ -65,7 +65,7 @@ type BowlFormState =
 
 ### 2.5 フォルダ構成はfeatureベース
 
-`components/` `hooks/` のような型別ではなく、機能単位（`bowl-records` / `individual-records` / `visualization` / `bowls` / `auth`）でまとめる。各feature内にUI・hook・repository・domainを閉じ込める。
+`components/` `hooks/` のような型別ではなく、機能単位（`bowl-records` / `individual-records` / `visualization` / `bowls` / `login`）でまとめる。各feature内にUI・hook・repository・domainを閉じ込める。
 
 ---
 
@@ -81,7 +81,7 @@ src/
 │       └── QueryProvider.tsx    # TanStack Query設定
 │
 ├── features/
-│   ├── auth/
+│   ├── login/
 │   │   ├── components/
 │   │   │   └── LoginPage.tsx
 │   │   ├── hooks/
@@ -136,9 +136,12 @@ src/
 │           └── dailySummary.ts         # 純粋関数での集計ロジック（テスト対象）
 │
 ├── shared/
-│   ├── components/ui/                  # shadcn/ui コンポーネント
+│   ├── components/
+│   │   ├── AppShell.tsx                # 共通ヘッダ・フッタ
+│   │   └── UserMenu.tsx                # アカウントメニュー（アバター・ログアウト）
 │   ├── lib/
-│   │   └── supabaseClient.ts
+│   │   ├── supabaseClient.ts
+│   │   └── getAvatarUrl.ts             # Google アバター URL 取得
 │   └── types/
 │       └── database.ts                 # Supabase生成の型定義
 │
