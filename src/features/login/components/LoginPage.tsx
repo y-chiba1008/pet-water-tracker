@@ -5,6 +5,7 @@ import {
   parseAuthCallbackError,
   toLoginErrorMessage,
 } from '@/features/login/lib/authCallbackError'
+import { APP_VERSION } from '@/shared/lib/appVersion'
 import { Button } from '@/components/ui/button'
 import googleGLogoLight from '@/assets/google-g-logo-light.svg'
 import logo from '@/assets/logo.png'
@@ -113,9 +114,14 @@ export function LoginPage() {
           </div>
         </div>
 
-        <p className="mt-6 text-center text-[11px] leading-[14px] font-medium tracking-wide text-[#78716C]">
-          愛猫の水分補給管理を、もっとシンプルに。
-        </p>
+        <div className="mt-6 flex flex-col items-center gap-1">
+          <p className="text-center text-[11px] leading-[14px] font-medium tracking-wide text-[#78716C]">
+            愛猫の水分補給管理を、もっとシンプルに。
+          </p>
+          <p className="text-center text-[11px] leading-[14px] font-medium tracking-wide text-[#A8A29E]">
+            v{APP_VERSION}
+          </p>
+        </div>
       </div>
     </main>
   )
