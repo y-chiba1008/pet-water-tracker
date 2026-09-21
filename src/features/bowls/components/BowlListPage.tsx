@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { GlassWater, Plus, User } from 'lucide-react'
+import { GlassWater, Plus } from 'lucide-react'
 import { BowlFormDialog } from '@/features/bowls/components/BowlFormDialog'
 import { BowlListItem } from '@/features/bowls/components/BowlListItem'
 import { DeactivateBowlDialog } from '@/features/bowls/components/DeactivateBowlDialog'
@@ -13,7 +13,6 @@ import type { BowlFormValues } from '@/features/bowls/lib/bowlFormSchema'
 import type { Bowl } from '@/features/bowls/types'
 import { AppShell } from '@/shared/components/AppShell'
 import { Button } from '@/components/ui/button'
-import { signOut } from '@/features/auth/api/authRepository'
 
 type FormDialogState =
   | { open: false }
@@ -36,7 +35,6 @@ export function BowlListPage() {
     useState<DeactivateDialogState>({ open: false })
   const [formError, setFormError] = useState<string | null>(null)
   const [deactivateError, setDeactivateError] = useState<string | null>(null)
-  const [isSigningOut, setIsSigningOut] = useState(false)
 
   const isFormSubmitting =
     createBowl.isPending || updateBowlName.isPending
@@ -78,32 +76,9 @@ export function BowlListPage() {
     }
   }
 
-  async function handleSignOut() {
-    setIsSigningOut(true)
-    try {
-      await signOut()
-    } catch {
-      setIsSigningOut(false)
-    }
-  }
-
   return (
-    <AppShell
-      title="水皿管理"
-      headerAction={
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="size-8 rounded-full bg-[#006591] text-white hover:bg-[#004c6e] hover:text-white"
-          aria-label={isSigningOut ? 'ログアウト中' : 'ログアウト'}
-          disabled={isSigningOut}
-          onClick={() => void handleSignOut()}
-        >
-          <User className="size-4" />
-        </Button>
-      }
-    >
+    <AppShell title="水皿管理">
+
       <div className="flex flex-col gap-4 pt-4">
         <div className="flex items-center justify-between gap-2 rounded-xl bg-white p-4 shadow-[0_2px_8px_-2px_rgba(120,113,108,0.06)]">
           <div className="flex min-w-0 items-center gap-2">
