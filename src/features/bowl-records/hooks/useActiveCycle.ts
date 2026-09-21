@@ -3,6 +3,7 @@ import {
   fetchActiveCycle,
   fetchAllActiveCycles,
   fetchLatestCompletedCycle,
+  fetchLatestCompletedCyclesByBowlIds,
 } from '@/features/bowl-records/api/bowlRecordRepository'
 
 export const activeCyclesQueryKey = ['bowl-records', 'active'] as const
@@ -13,6 +14,14 @@ export function activeCycleQueryKey(bowlId: string) {
 
 export function latestCompletedCycleQueryKey(bowlId: string) {
   return ['bowl-records', 'latest-completed', bowlId] as const
+}
+
+export function latestCompletedCyclesByBowlIdsQueryKey(bowlIds: string[]) {
+  return [
+    'bowl-records',
+    'latest-completed-many',
+    ...[...bowlIds].sort(),
+  ] as const
 }
 
 export function useActiveCycles() {
@@ -49,5 +58,15 @@ export function useLatestCompletedCycle(bowlId: string | null) {
       return fetchLatestCompletedCycle(bowlId)
     },
     enabled: Boolean(bowlId),
+  })
+}
+
+export function useLatestCompletedCyclesByBowlIds(bowlIds: string[]) {
+  const sortedBowlIds = [...bowlIds].sort()
+
+  return useQuery({
+    queryKey: latestCompletedCyclesByBowlIdsQueryKey(sortedBowlIds),
+    queryFn: () => fetchLatestCompletedCyclesByBowlIds(sortedBowlIds),
+    enabled: sortedBowlIds.length > 0,
   })
 }

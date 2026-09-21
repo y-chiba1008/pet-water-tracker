@@ -3,6 +3,7 @@ import {
   differenceInHours,
   differenceInMinutes,
   format,
+  isSameDay,
 } from 'date-fns'
 
 /** datetime-local 用のローカル日時文字列 (YYYY-MM-DDTHH:mm) */
@@ -30,22 +31,49 @@ export function formatElapsedLabel(
   fromIso: string,
   to: Date = new Date(),
 ): string {
+  return `約${formatElapsedDuration(fromIso, to)}`
+}
+
+/** 水皿一覧向け: 「交換から8時間経過」 */
+export function formatExchangeElapsedLabel(
+  fromIso: string,
+  to: Date = new Date(),
+): string {
+  return `交換から${formatElapsedDuration(fromIso, to)}経過`
+}
+
+/** 水皿一覧向け: 「直近の完了: 本日 11:30」 */
+export function formatLatestCompletedAtLabel(
+  endTimeIso: string,
+  now: Date = new Date(),
+): string {
+  const end = new Date(endTimeIso)
+  const time = format(end, 'HH:mm')
+
+  if (isSameDay(end, now)) {
+    return `直近の完了: 本日 ${time}`
+  }
+
+  return `直近の完了: ${format(end, 'M/d')} ${time}`
+}
+
+function formatElapsedDuration(fromIso: string, to: Date): string {
   const from = new Date(fromIso)
   const minutes = Math.max(0, differenceInMinutes(to, from))
 
   if (minutes < 60) {
-    return `約${Math.max(1, minutes)}分`
+    return `${Math.max(1, minutes)}分`
   }
 
   const hours = differenceInHours(to, from)
   if (hours < 24) {
     const remainMinutes = minutes % 60
     if (remainMinutes === 0) {
-      return `約${hours}時間`
+      return `${hours}時間`
     }
-    return `約${hours}時間${remainMinutes}分`
+    return `${hours}時間${remainMinutes}分`
   }
 
   const days = differenceInDays(to, from)
-  return `約${days}日`
+  return `${days}日`
 }

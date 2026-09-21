@@ -56,6 +56,36 @@ export async function fetchLatestCompletedCycle(
   return data
 }
 
+/** 複数水皿について、各 bowl_id の直近完了サイクルを返す */
+export async function fetchLatestCompletedCyclesByBowlIds(
+  bowlIds: string[],
+): Promise<Map<string, BowlRecord>> {
+  const uniqueBowlIds = [...new Set(bowlIds)]
+  if (uniqueBowlIds.length === 0) {
+    return new Map()
+  }
+
+  const { data, error } = await supabase
+    .from('bowl_records')
+    .select('*')
+    .in('bowl_id', uniqueBowlIds)
+    .not('end_time', 'is', null)
+    .order('end_time', { ascending: false })
+
+  if (error) {
+    throw error
+  }
+
+  const latestByBowlId = new Map<string, BowlRecord>()
+  for (const record of data) {
+    if (!latestByBowlId.has(record.bowl_id)) {
+      latestByBowlId.set(record.bowl_id, record)
+    }
+  }
+
+  return latestByBowlId
+}
+
 export async function insertStartRecord(
   input: InsertStartRecordInput,
 ): Promise<BowlRecord> {

@@ -1,7 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { GlassWater, Plus } from 'lucide-react'
 import { BowlFormDialog } from '@/features/bowls/components/BowlFormDialog'
-import { BowlListItem } from '@/features/bowls/components/BowlListItem'
+import {
+  BowlListItem,
+  type BowlCycleDisplay,
+} from '@/features/bowls/components/BowlListItem'
 import { DeactivateBowlDialog } from '@/features/bowls/components/DeactivateBowlDialog'
 import {
   useCreateBowl,
@@ -11,6 +14,14 @@ import {
 import { useBowls } from '@/features/bowls/hooks/useBowls'
 import type { BowlFormValues } from '@/features/bowls/lib/bowlFormSchema'
 import type { Bowl } from '@/features/bowls/types'
+import {
+  useActiveCycles,
+  useLatestCompletedCyclesByBowlIds,
+} from '@/features/bowl-records/hooks/useActiveCycle'
+import {
+  formatExchangeElapsedLabel,
+  formatLatestCompletedAtLabel,
+} from '@/shared/lib/dateTime'
 import { AppShell } from '@/shared/components/AppShell'
 import { Button } from '@/components/ui/button'
 
@@ -26,6 +37,13 @@ type DeactivateDialogState =
 export function BowlListPage() {
   const { data: bowls = [], isLoading, isError, refetch, isFetching } =
     useBowls()
+  const {
+    data: activeCycles = [],
+    isLoading: cyclesLoading,
+    isError: cyclesError,
+    refetch: refetchCycles,
+    isFetching: cyclesFetching,
+  } = useActiveCycles()
   const createBowl = useCreateBowl()
   const updateBowlName = useUpdateBowlName()
   const deactivateBowl = useDeactivateBowl()
@@ -36,8 +54,58 @@ export function BowlListPage() {
   const [formError, setFormError] = useState<string | null>(null)
   const [deactivateError, setDeactivateError] = useState<string | null>(null)
 
+  const activeCyclesByBowlId = useMemo(() => {
+    return new Map(
+      activeCycles.map((record) => [record.bowl_id, record] as const),
+    )
+  }, [activeCycles])
+
+  const standbyBowlIds = useMemo(
+    () =>
+      bowls
+        .filter((bowl) => !activeCyclesByBowlId.has(bowl.id))
+        .map((bowl) => bowl.id),
+    [bowls, activeCyclesByBowlId],
+  )
+
+  const {
+    data: latestCompletedByBowlId = new Map(),
+    isLoading: latestLoading,
+    isError: latestError,
+    refetch: refetchLatest,
+    isFetching: latestFetching,
+  } = useLatestCompletedCyclesByBowlIds(standbyBowlIds)
+
   const isFormSubmitting =
     createBowl.isPending || updateBowlName.isPending
+
+  const listLoading = isLoading || cyclesLoading || latestLoading
+  const listError = isError || cyclesError || latestError
+  const listFetching = isFetching || cyclesFetching || latestFetching
+  const activeCount = activeCyclesByBowlId.size
+
+  function resolveCycleDisplay(bowl: Bowl): BowlCycleDisplay {
+    const active = activeCyclesByBowlId.get(bowl.id)
+    if (active) {
+      return {
+        status: 'active',
+        detailLabel: formatExchangeElapsedLabel(active.start_time),
+      }
+    }
+
+    const latest = latestCompletedByBowlId.get(bowl.id)
+    if (latest?.end_time) {
+      return {
+        status: 'standby',
+        detailLabel: formatLatestCompletedAtLabel(latest.end_time),
+      }
+    }
+
+    return {
+      status: 'standby',
+      detailLabel: '記録なし',
+    }
+  }
 
   async function handleFormSubmit(values: BowlFormValues) {
     if (!formDialog.open) {
@@ -76,6 +144,12 @@ export function BowlListPage() {
     }
   }
 
+  function handleRefetch() {
+    void refetch()
+    void refetchCycles()
+    void refetchLatest()
+  }
+
   return (
     <AppShell title="水皿管理">
 
@@ -87,9 +161,14 @@ export function BowlListPage() {
             </div>
             <div className="flex min-w-0 items-baseline gap-1">
               <span className="font-heading text-xl font-semibold text-[#292524]">
-                {bowls.length}
+                {activeCount}
               </span>
-              <span className="truncate text-xs text-[#78716C]">件登録中</span>
+              <span className="font-heading text-base font-semibold text-[#78716C]">
+                / {bowls.length}
+              </span>
+              <span className="truncate text-xs text-[#78716C]">
+                箇所設置中
+              </span>
             </div>
           </div>
 
@@ -106,11 +185,11 @@ export function BowlListPage() {
           </Button>
         </div>
 
-        {isLoading ? (
+        {listLoading ? (
           <p className="py-8 text-center text-sm text-[#78716C]">読み込み中…</p>
         ) : null}
 
-        {isError ? (
+        {listError ? (
           <div className="flex flex-col items-center gap-3 py-8">
             <p className="text-sm text-destructive" role="alert">
               水皿一覧の取得に失敗しました。
@@ -118,15 +197,15 @@ export function BowlListPage() {
             <Button
               type="button"
               variant="outline"
-              disabled={isFetching}
-              onClick={() => void refetch()}
+              disabled={listFetching}
+              onClick={handleRefetch}
             >
               再読み込み
             </Button>
           </div>
         ) : null}
 
-        {!isLoading && !isError && bowls.length === 0 ? (
+        {!listLoading && !listError && bowls.length === 0 ? (
           <div className="rounded-xl bg-white p-6 text-center shadow-[0_2px_8px_-2px_rgba(120,113,108,0.06)]">
             <p className="font-heading text-base font-semibold text-[#292524]">
               水皿がまだありません
@@ -137,12 +216,13 @@ export function BowlListPage() {
           </div>
         ) : null}
 
-        {!isLoading && !isError && bowls.length > 0 ? (
+        {!listLoading && !listError && bowls.length > 0 ? (
           <div className="flex flex-col gap-4">
             {bowls.map((bowl) => (
               <BowlListItem
                 key={bowl.id}
                 bowl={bowl}
+                cycle={resolveCycleDisplay(bowl)}
                 onEdit={(target) => {
                   setFormError(null)
                   setFormDialog({ open: true, mode: 'edit', bowl: target })
