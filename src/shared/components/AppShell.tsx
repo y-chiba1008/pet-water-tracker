@@ -1,12 +1,15 @@
+import { useState, type ReactNode } from 'react'
 import { NavLink } from 'react-router'
 import {
   Bath,
   Droplet,
   NotebookPen,
   SlidersHorizontal,
+  User,
 } from 'lucide-react'
+import { signOut } from '@/features/auth/api/authRepository'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import type { ReactNode } from 'react'
 import logo from '@/assets/logo.png'
 
 const navItems = [
@@ -36,10 +39,22 @@ const navItems = [
 type AppShellProps = {
   title: string
   children: ReactNode
+  /** ページ固有のヘッダアクション（共通ログアウトの左側に並置） */
   headerAction?: ReactNode
 }
 
 export function AppShell({ title, children, headerAction }: AppShellProps) {
+  const [isSigningOut, setIsSigningOut] = useState(false)
+
+  async function handleSignOut() {
+    setIsSigningOut(true)
+    try {
+      await signOut()
+    } catch {
+      setIsSigningOut(false)
+    }
+  }
+
   return (
     <div className="flex min-h-svh flex-col bg-[#FAF7F2] text-[#292524] selection:bg-[#E0F2FE] selection:text-[#006591]">
       <header className="fixed top-0 z-40 w-full bg-[#fff8f5]/80 shadow-[0_1px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl">
@@ -59,9 +74,20 @@ export function AppShell({ title, children, headerAction }: AppShellProps) {
               </h1>
             </div>
           </div>
-          {headerAction ? (
-            <div className="flex shrink-0 items-center gap-2">{headerAction}</div>
-          ) : null}
+          <div className="flex shrink-0 items-center gap-2">
+            {headerAction}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon-sm"
+              className="size-8 rounded-full bg-[#006591] text-white hover:bg-[#004c6e] hover:text-white"
+              aria-label={isSigningOut ? 'ログアウト中' : 'ログアウト'}
+              disabled={isSigningOut}
+              onClick={() => void handleSignOut()}
+            >
+              <User className="size-4" />
+            </Button>
+          </div>
         </div>
       </header>
 
