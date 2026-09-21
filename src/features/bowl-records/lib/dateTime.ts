@@ -15,6 +15,13 @@ export function dateTimeLocalToIso(value: string): string {
   return new Date(value).toISOString()
 }
 
+/** datetime-local 入力との比較用に秒未満を切り捨てる */
+export function truncateToMinute(date: Date): Date {
+  const truncated = new Date(date)
+  truncated.setSeconds(0, 0)
+  return truncated
+}
+
 export function formatClockTime(iso: string): string {
   return format(new Date(iso), 'HH:mm')
 }

@@ -4,15 +4,16 @@ import {
   insertStartRecord,
   updateEndRecord,
 } from '@/features/bowl-records/api/bowlRecordRepository'
-import { activeCyclesQueryKey } from '@/features/bowl-records/hooks/useActiveCycle'
 import type {
   CompleteCycleAndStartNextInput,
   InsertStartRecordInput,
   UpdateEndRecordInput,
 } from '@/features/bowl-records/types'
 
-async function invalidateActiveCycles(queryClient: ReturnType<typeof useQueryClient>) {
-  await queryClient.invalidateQueries({ queryKey: activeCyclesQueryKey })
+async function invalidateBowlRecordQueries(
+  queryClient: ReturnType<typeof useQueryClient>,
+) {
+  await queryClient.invalidateQueries({ queryKey: ['bowl-records'] })
 }
 
 export function useInsertStartRecord() {
@@ -21,7 +22,7 @@ export function useInsertStartRecord() {
   return useMutation({
     mutationFn: (input: InsertStartRecordInput) => insertStartRecord(input),
     onSuccess: async () => {
-      await invalidateActiveCycles(queryClient)
+      await invalidateBowlRecordQueries(queryClient)
     },
   })
 }
@@ -32,7 +33,7 @@ export function useUpdateEndRecord() {
   return useMutation({
     mutationFn: (input: UpdateEndRecordInput) => updateEndRecord(input),
     onSuccess: async () => {
-      await invalidateActiveCycles(queryClient)
+      await invalidateBowlRecordQueries(queryClient)
     },
   })
 }
@@ -44,7 +45,7 @@ export function useCompleteCycleAndStartNext() {
     mutationFn: (input: CompleteCycleAndStartNextInput) =>
       completeCycleAndStartNext(input),
     onSuccess: async () => {
-      await invalidateActiveCycles(queryClient)
+      await invalidateBowlRecordQueries(queryClient)
     },
   })
 }

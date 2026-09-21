@@ -1,4 +1,9 @@
 import { z } from 'zod'
+import {
+  checkRecordedAtConsistency,
+  isAbnormal,
+  recordedAtIssueMessage,
+} from '@/features/bowl-records/domain/bowlRecord'
 
 const amountField = z
   .number({ error: '容量を入力してください' })
@@ -13,19 +18,68 @@ const recordedAtField = z
     message: '正しい日時を入力してください',
   })
 
-export const noActiveCycleFormSchema = z.object({
+const noActiveCycleBaseSchema = z.object({
   recordedAt: recordedAtField,
   startAmountMl: amountField,
 })
 
-export const activeCycleFormSchema = z.object({
+const activeCycleBaseSchema = z.object({
   recordedAt: recordedAtField,
   endAmountMl: amountField,
   startAmountMl: amountField.optional(),
 })
 
-export type NoActiveCycleFormValues = z.infer<typeof noActiveCycleFormSchema>
-export type ActiveCycleFormValues = z.infer<typeof activeCycleFormSchema>
+export type NoActiveCycleFormValues = z.infer<typeof noActiveCycleBaseSchema>
+export type ActiveCycleFormValues = z.infer<typeof activeCycleBaseSchema>
+
+type RecordedAtSchemaOptions = {
+  previousAt?: string | null
+  now?: Date
+}
+
+export function createNoActiveCycleFormSchema(
+  options: RecordedAtSchemaOptions = {},
+) {
+  return noActiveCycleBaseSchema.superRefine((values, ctx) => {
+    const consistency = checkRecordedAtConsistency(values.recordedAt, {
+      previousAt: options.previousAt,
+      now: options.now,
+    })
+    if (!consistency.ok) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['recordedAt'],
+        message: recordedAtIssueMessage(consistency.reason),
+      })
+    }
+  })
+}
+
+export function createActiveCycleFormSchema(
+  options: RecordedAtSchemaOptions & { startAmountMl: number },
+) {
+  return activeCycleBaseSchema.superRefine((values, ctx) => {
+    const consistency = checkRecordedAtConsistency(values.recordedAt, {
+      previousAt: options.previousAt,
+      now: options.now,
+    })
+    if (!consistency.ok) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['recordedAt'],
+        message: recordedAtIssueMessage(consistency.reason),
+      })
+    }
+
+    if (isAbnormal(options.startAmountMl, values.endAmountMl)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['endAmountMl'],
+        message: '終了容量は開始容量以下にしてください',
+      })
+    }
+  })
+}
 
 /** number input の空欄 / NaN を undefined に揃える */
 export function setAmountValueAs(value: unknown): number | undefined {

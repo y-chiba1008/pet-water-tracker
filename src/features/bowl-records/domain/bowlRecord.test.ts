@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   calcWaterAmount,
+  checkRecordedAtConsistency,
   isAbnormal,
   isActiveCycle,
 } from '@/features/bowl-records/domain/bowlRecord'
@@ -56,5 +57,45 @@ describe('isActiveCycle', () => {
     expect(
       isActiveCycle(makeRecord({ end_time: '2026-09-21T12:00:00.000Z' })),
     ).toBe(false)
+  })
+})
+
+describe('checkRecordedAtConsistency', () => {
+  const now = new Date('2026-09-21T12:00:00')
+
+  it('accepts a time between previous and now', () => {
+    expect(
+      checkRecordedAtConsistency('2026-09-21T10:00', {
+        previousAt: '2026-09-21T08:00:00',
+        now,
+      }),
+    ).toEqual({ ok: true })
+  })
+
+  it('rejects a time before previous', () => {
+    expect(
+      checkRecordedAtConsistency('2026-09-21T07:00', {
+        previousAt: '2026-09-21T08:00:00',
+        now,
+      }),
+    ).toEqual({ ok: false, reason: 'before_previous' })
+  })
+
+  it('rejects a future time', () => {
+    expect(
+      checkRecordedAtConsistency('2026-09-21T13:00', {
+        previousAt: '2026-09-21T08:00:00',
+        now,
+      }),
+    ).toEqual({ ok: false, reason: 'future' })
+  })
+
+  it('accepts equal previous and now boundaries', () => {
+    expect(
+      checkRecordedAtConsistency('2026-09-21T08:00', {
+        previousAt: '2026-09-21T08:00:30',
+        now: new Date('2026-09-21T08:00:45'),
+      }),
+    ).toEqual({ ok: true })
   })
 })

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { BowlRecordForm } from '@/features/bowl-records/components/BowlRecordForm'
 import { BowlSelector } from '@/features/bowl-records/components/BowlSelector'
-import { useActiveCycles } from '@/features/bowl-records/hooks/useActiveCycle'
+import { useActiveCycles, useLatestCompletedCycle } from '@/features/bowl-records/hooks/useActiveCycle'
 import {
   useCompleteCycleAndStartNext,
   useInsertStartRecord,
@@ -73,6 +73,14 @@ export function BowlRecordPage() {
   const activeCycle = effectiveBowlId
     ? (activeCyclesByBowlId.get(effectiveBowlId) ?? null)
     : null
+
+  const { data: latestCompleted = null } = useLatestCompletedCycle(
+    effectiveBowlId && !activeCycle ? effectiveBowlId : null,
+  )
+
+  const previousRecordedAt = activeCycle
+    ? activeCycle.start_time
+    : (latestCompleted?.end_time ?? null)
 
   const formState: BowlFormState | null = effectiveBowlId
     ? activeCycle
@@ -204,6 +212,7 @@ export function BowlRecordPage() {
             <BowlRecordForm
               formState={formState}
               bowlKey={`${effectiveBowlId}:${formState.mode}:${activeCycle?.id ?? 'none'}`}
+              previousRecordedAt={previousRecordedAt}
               isSubmitting={isSubmitting}
               errorMessage={formError}
               onSubmitNoActiveCycle={handleNoActiveCycleSubmit}

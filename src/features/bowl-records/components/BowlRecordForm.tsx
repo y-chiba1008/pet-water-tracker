@@ -1,15 +1,18 @@
 import type { ComponentProps } from 'react'
+import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle2, Clock3, CupSoda, RefreshCw } from 'lucide-react'
 import {
   calcWaterAmount,
+  checkRecordedAtConsistency,
   isAbnormal,
+  recordedAtIssueMessage,
 } from '@/features/bowl-records/domain/bowlRecord'
 import { AbnormalValueWarning } from '@/features/bowl-records/components/AbnormalValueWarning'
 import {
-  activeCycleFormSchema,
-  noActiveCycleFormSchema,
+  createActiveCycleFormSchema,
+  createNoActiveCycleFormSchema,
   setAmountValueAs,
   type ActiveCycleFormValues,
   type NoActiveCycleFormValues,
@@ -41,6 +44,8 @@ const START_PRESETS = [
 type BowlRecordFormProps = {
   formState: BowlFormState
   bowlKey: string
+  /** 待機中の場合の前回記録時刻（直近完了サイクルの end_time） */
+  previousRecordedAt: string | null
   isSubmitting: boolean
   errorMessage: string | null
   onSubmitNoActiveCycle: (values: NoActiveCycleFormValues) => Promise<void>
@@ -50,6 +55,7 @@ type BowlRecordFormProps = {
 export function BowlRecordForm({
   formState,
   bowlKey,
+  previousRecordedAt,
   isSubmitting,
   errorMessage,
   onSubmitNoActiveCycle,
@@ -59,6 +65,7 @@ export function BowlRecordForm({
     return (
       <NoActiveCycleForm
         key={bowlKey}
+        previousRecordedAt={previousRecordedAt}
         isSubmitting={isSubmitting}
         errorMessage={errorMessage}
         onSubmit={onSubmitNoActiveCycle}
@@ -78,27 +85,45 @@ export function BowlRecordForm({
 }
 
 type NoActiveCycleFormProps = {
+  previousRecordedAt: string | null
   isSubmitting: boolean
   errorMessage: string | null
   onSubmit: (values: NoActiveCycleFormValues) => Promise<void>
 }
 
 function NoActiveCycleForm({
+  previousRecordedAt,
   isSubmitting,
   errorMessage,
   onSubmit,
 }: NoActiveCycleFormProps) {
+  const schema = useMemo(
+    () =>
+      createNoActiveCycleFormSchema({
+        previousAt: previousRecordedAt,
+      }),
+    [previousRecordedAt],
+  )
+
   const {
+    control,
     register,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm<NoActiveCycleFormValues>({
-    resolver: zodResolver(noActiveCycleFormSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       recordedAt: toDateTimeLocalValue(),
     },
+    mode: 'onChange',
   })
+
+  const recordedAt = useWatch({ control, name: 'recordedAt' })
+  const timeConsistency = checkRecordedAtConsistency(recordedAt ?? '', {
+    previousAt: previousRecordedAt,
+  })
+  const canSubmit = timeConsistency.ok
 
   return (
     <form
@@ -113,7 +138,12 @@ function NoActiveCycleForm({
 
       <DateTimeField
         id="bowl-record-start-time"
-        error={errors.recordedAt?.message}
+        error={
+          errors.recordedAt?.message ??
+          (!timeConsistency.ok
+            ? recordedAtIssueMessage(timeConsistency.reason)
+            : undefined)
+        }
         onSetNow={() =>
           setValue('recordedAt', toDateTimeLocalValue(), {
             shouldValidate: true,
@@ -141,7 +171,7 @@ function NoActiveCycleForm({
         </p>
       ) : null}
 
-      <SubmitButton isSubmitting={isSubmitting} />
+      <SubmitButton isSubmitting={isSubmitting} disabled={!canSubmit} />
     </form>
   )
 }
@@ -159,6 +189,15 @@ function ActiveCycleForm({
   errorMessage,
   onSubmit,
 }: ActiveCycleFormProps) {
+  const schema = useMemo(
+    () =>
+      createActiveCycleFormSchema({
+        previousAt: current.start_time,
+        startAmountMl: current.start_amount_ml,
+      }),
+    [current.start_amount_ml, current.start_time],
+  )
+
   const {
     control,
     register,
@@ -166,14 +205,16 @@ function ActiveCycleForm({
     setValue,
     formState: { errors },
   } = useForm<ActiveCycleFormValues>({
-    resolver: zodResolver(activeCycleFormSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       recordedAt: toDateTimeLocalValue(),
     },
+    mode: 'onChange',
   })
 
   const endAmountMl = useWatch({ control, name: 'endAmountMl' })
   const startAmountMl = useWatch({ control, name: 'startAmountMl' })
+  const recordedAt = useWatch({ control, name: 'recordedAt' })
 
   const endAmountNumber =
     typeof endAmountMl === 'number' && !Number.isNaN(endAmountMl)
@@ -184,10 +225,16 @@ function ActiveCycleForm({
     endAmountNumber !== null &&
     isAbnormal(current.start_amount_ml, endAmountNumber)
 
+  const timeConsistency = checkRecordedAtConsistency(recordedAt ?? '', {
+    previousAt: current.start_time,
+  })
+
   const waterAmount =
     endAmountNumber !== null
       ? calcWaterAmount(current.start_amount_ml, endAmountNumber)
       : null
+
+  const canSubmit = timeConsistency.ok && !abnormal
 
   return (
     <form
@@ -206,7 +253,12 @@ function ActiveCycleForm({
 
       <DateTimeField
         id="bowl-record-end-time"
-        error={errors.recordedAt?.message}
+        error={
+          errors.recordedAt?.message ??
+          (!timeConsistency.ok
+            ? recordedAtIssueMessage(timeConsistency.reason)
+            : undefined)
+        }
         helperText="水皿の交換日時として記録されます。"
         onSetNow={() =>
           setValue('recordedAt', toDateTimeLocalValue(), {
@@ -289,7 +341,7 @@ function ActiveCycleForm({
         </p>
       ) : null}
 
-      <SubmitButton isSubmitting={isSubmitting} />
+      <SubmitButton isSubmitting={isSubmitting} disabled={!canSubmit} />
     </form>
   )
 }
@@ -486,12 +538,18 @@ function AmountField({
   )
 }
 
-function SubmitButton({ isSubmitting }: { isSubmitting: boolean }) {
+function SubmitButton({
+  isSubmitting,
+  disabled = false,
+}: {
+  isSubmitting: boolean
+  disabled?: boolean
+}) {
   return (
     <Button
       type="submit"
-      disabled={isSubmitting}
-      className="h-12 w-full gap-2 rounded-full bg-[#0EA5E9] text-base font-semibold text-white shadow-[0_4px_14px_rgba(14,165,233,0.25)] hover:bg-[#0284C7]"
+      disabled={isSubmitting || disabled}
+      className="h-12 w-full gap-2 rounded-full bg-[#0EA5E9] text-base font-semibold text-white shadow-[0_4px_14px_rgba(14,165,233,0.25)] hover:bg-[#0284C7] disabled:opacity-50"
     >
       <CheckCircle2 className="size-5" strokeWidth={2} />
       {isSubmitting ? '保存中…' : '記録を保存する'}

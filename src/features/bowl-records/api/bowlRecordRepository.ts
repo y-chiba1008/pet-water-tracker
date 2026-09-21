@@ -36,6 +36,26 @@ export async function fetchAllActiveCycles(): Promise<BowlRecord[]> {
   return data
 }
 
+/** 当該水皿の直近の完了サイクル（end_time が最も新しいもの） */
+export async function fetchLatestCompletedCycle(
+  bowlId: string,
+): Promise<BowlRecord | null> {
+  const { data, error } = await supabase
+    .from('bowl_records')
+    .select('*')
+    .eq('bowl_id', bowlId)
+    .not('end_time', 'is', null)
+    .order('end_time', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (error) {
+    throw error
+  }
+
+  return data
+}
+
 export async function insertStartRecord(
   input: InsertStartRecordInput,
 ): Promise<BowlRecord> {

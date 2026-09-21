@@ -1,13 +1,19 @@
 import { describe, expect, it } from 'vitest'
 import {
-  activeCycleFormSchema,
-  noActiveCycleFormSchema,
+  createActiveCycleFormSchema,
+  createNoActiveCycleFormSchema,
   setAmountValueAs,
 } from '@/features/bowl-records/lib/bowlRecordFormSchema'
 
-describe('noActiveCycleFormSchema', () => {
-  it('accepts start amount and datetime', () => {
-    const result = noActiveCycleFormSchema.safeParse({
+const now = new Date('2026-09-21T12:00:00')
+
+describe('createNoActiveCycleFormSchema', () => {
+  it('accepts start amount and datetime within range', () => {
+    const schema = createNoActiveCycleFormSchema({
+      previousAt: '2026-09-21T08:00:00',
+      now,
+    })
+    const result = schema.safeParse({
       recordedAt: '2026-09-21T10:00',
       startAmountMl: 250,
     })
@@ -15,17 +21,46 @@ describe('noActiveCycleFormSchema', () => {
   })
 
   it('rejects missing start amount', () => {
-    const result = noActiveCycleFormSchema.safeParse({
+    const schema = createNoActiveCycleFormSchema({ now })
+    const result = schema.safeParse({
       recordedAt: '2026-09-21T10:00',
       startAmountMl: undefined,
     })
     expect(result.success).toBe(false)
   })
+
+  it('rejects datetime before previous recorded time', () => {
+    const schema = createNoActiveCycleFormSchema({
+      previousAt: '2026-09-21T11:00:00',
+      now,
+    })
+    const result = schema.safeParse({
+      recordedAt: '2026-09-21T10:00',
+      startAmountMl: 250,
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects future datetime', () => {
+    const schema = createNoActiveCycleFormSchema({ now })
+    const result = schema.safeParse({
+      recordedAt: '2026-09-21T13:00',
+      startAmountMl: 250,
+    })
+    expect(result.success).toBe(false)
+  })
 })
 
-describe('activeCycleFormSchema', () => {
+describe('createActiveCycleFormSchema', () => {
+  const previousAt = '2026-09-21T08:00:00'
+
   it('accepts end-only submission', () => {
-    const result = activeCycleFormSchema.safeParse({
+    const schema = createActiveCycleFormSchema({
+      previousAt,
+      startAmountMl: 240,
+      now,
+    })
+    const result = schema.safeParse({
       recordedAt: '2026-09-21T10:00',
       endAmountMl: 80,
     })
@@ -36,7 +71,12 @@ describe('activeCycleFormSchema', () => {
   })
 
   it('accepts end and start submission', () => {
-    const result = activeCycleFormSchema.safeParse({
+    const schema = createActiveCycleFormSchema({
+      previousAt,
+      startAmountMl: 240,
+      now,
+    })
+    const result = schema.safeParse({
       recordedAt: '2026-09-21T10:00',
       endAmountMl: 80,
       startAmountMl: 250,
@@ -48,10 +88,41 @@ describe('activeCycleFormSchema', () => {
   })
 
   it('rejects missing end amount', () => {
-    const result = activeCycleFormSchema.safeParse({
+    const schema = createActiveCycleFormSchema({
+      previousAt,
+      startAmountMl: 240,
+      now,
+    })
+    const result = schema.safeParse({
       recordedAt: '2026-09-21T10:00',
       endAmountMl: undefined,
       startAmountMl: 250,
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects abnormal end amount greater than start', () => {
+    const schema = createActiveCycleFormSchema({
+      previousAt,
+      startAmountMl: 200,
+      now,
+    })
+    const result = schema.safeParse({
+      recordedAt: '2026-09-21T10:00',
+      endAmountMl: 250,
+    })
+    expect(result.success).toBe(false)
+  })
+
+  it('rejects datetime before previous start time', () => {
+    const schema = createActiveCycleFormSchema({
+      previousAt: '2026-09-21T11:00:00',
+      startAmountMl: 240,
+      now,
+    })
+    const result = schema.safeParse({
+      recordedAt: '2026-09-21T10:00',
+      endAmountMl: 80,
     })
     expect(result.success).toBe(false)
   })
