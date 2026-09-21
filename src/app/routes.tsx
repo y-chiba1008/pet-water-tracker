@@ -5,6 +5,7 @@ import {
 } from '@/features/auth/components/AuthGuard'
 import { HomePlaceholderPage } from '@/features/auth/components/HomePlaceholderPage'
 import { LoginPage } from '@/features/auth/components/LoginPage'
+import { BowlListPage } from '@/features/bowls/components/BowlListPage'
 
 export function AppRoutes() {
   return (
@@ -15,6 +16,7 @@ export function AppRoutes() {
 
       <Route element={<RequireAuth />}>
         <Route path="/" element={<HomePlaceholderPage />} />
+        <Route path="/bowls" element={<BowlListPage />} />
       </Route>
     </Routes>
   )

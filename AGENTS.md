@@ -279,6 +279,10 @@ pnpm check-gen-types
 - shadcn/ui のコンポーネントを積極的に活用する
 - クラス名の結合には `cn()` ユーティリティを使用する
 - 色・余白・角丸・影などは `DESIGN.md` のトークン・指針に合わせる（独自の見た目を増やさない）
+- **同じ意味のボタンは色と形を揃える。** 画面が違っても、取り消し・確定・破壊的操作は既存のボタンと見た目を一致させる。shadcn の `outline` や `destructive`（薄い赤）をそのまま使うと既存ダイアログとずれて見づらくなるので、次のクラスに合わせる
+  - 取り消し（「キャンセル」「やめる」など）: `h-12 rounded-full bg-[#F5EFEB] text-base font-semibold text-[#78716C] hover:bg-[#eae1da]`
+  - 主アクションの確定（追加・保存など）: `h-12 rounded-full bg-[#0EA5E9] text-base font-semibold text-white shadow-[0_4px_14px_rgba(14,165,233,0.25)] hover:bg-[#0284C7]`
+  - 破壊的な確定（削除など）: `h-12 rounded-full bg-[#ba1a1a] text-base font-semibold text-white hover:bg-[#93000a]`
 
 ### Git / ブランチ命名
 
