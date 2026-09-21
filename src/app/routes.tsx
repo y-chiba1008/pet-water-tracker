@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router'
+import { Navigate, Route, Routes } from 'react-router'
 import {
   GuestOnly,
   RequireAuth,
@@ -17,6 +17,8 @@ export function AppRoutes() {
       <Route element={<RequireAuth />}>
         <Route path="/" element={<HomePlaceholderPage />} />
         <Route path="/bowls" element={<BowlListPage />} />
+        {/* 未知のパスはホームへ。未ログイン時は RequireAuth が /login へ誘導する */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   )
