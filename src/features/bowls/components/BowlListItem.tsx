@@ -1,18 +1,27 @@
 import { Droplet, Pencil, Trash2 } from 'lucide-react'
 import type { Bowl } from '@/features/bowls/types'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
+export type BowlCycleDisplay =
+  | { status: 'active'; detailLabel: string }
+  | { status: 'standby'; detailLabel: string }
 
 type BowlListItemProps = {
   bowl: Bowl
+  cycle: BowlCycleDisplay
   onEdit: (bowl: Bowl) => void
   onDeactivate: (bowl: Bowl) => void
 }
 
 export function BowlListItem({
   bowl,
+  cycle,
   onEdit,
   onDeactivate,
 }: BowlListItemProps) {
+  const isActive = cycle.status === 'active'
+
   return (
     <article className="relative flex flex-col gap-4 rounded-xl bg-white p-4 shadow-[0_2px_8px_-2px_rgba(120,113,108,0.06)]">
       <div className="flex items-center justify-between gap-2">
@@ -24,7 +33,9 @@ export function BowlListItem({
             <h2 className="font-heading truncate text-base font-semibold text-[#292524]">
               {bowl.name}
             </h2>
-            <span className="truncate text-xs text-[#78716C]">登録済み</span>
+            <span className="truncate text-xs text-[#78716C]">
+              {cycle.detailLabel}
+            </span>
           </div>
         </div>
 
@@ -52,10 +63,29 @@ export function BowlListItem({
         </div>
       </div>
 
-      <div className="flex items-center justify-between rounded-lg bg-[#E0F2FE]/70 px-4 py-2.5">
+      <div
+        className={cn(
+          'flex items-center justify-between rounded-lg px-4 py-2.5',
+          isActive ? 'bg-[#E0F2FE]/70' : 'bg-[#F5EFEB]',
+        )}
+      >
         <div className="flex items-center gap-1.5">
-          <span className="inline-flex size-2.5 rounded-full bg-[#0284C7]" />
-          <span className="text-xs font-semibold text-[#0284C7]">有効</span>
+          {isActive ? (
+            <span className="relative flex size-2.5">
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#38BDF8] opacity-75" />
+              <span className="relative inline-flex size-2.5 rounded-full bg-[#0284C7]" />
+            </span>
+          ) : (
+            <span className="inline-flex size-2.5 rounded-full bg-[#A8A29E]" />
+          )}
+          <span
+            className={cn(
+              'text-xs font-semibold',
+              isActive ? 'text-[#0284C7]' : 'text-[#78716C]',
+            )}
+          >
+            {isActive ? '設置中' : '待機中'}
+          </span>
         </div>
       </div>
     </article>
