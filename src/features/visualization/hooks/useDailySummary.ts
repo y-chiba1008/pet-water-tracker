@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { fetchSummaryRecords } from '@/features/visualization/api/summaryRepository'
 import {
@@ -22,8 +22,6 @@ export type DailySummaryViewModel = {
   monthRecordedDays: number
   chartSeries: { date: string; amountMl: number }[]
   chartExtremes: { maxMl: number; minMl: number } | null
-  calendarYear: number
-  calendarMonth: number
 }
 
 function buildViewModel(
@@ -71,24 +69,32 @@ function buildViewModel(
     monthRecordedDays: monthStats.recordedDays,
     chartSeries,
     chartExtremes: calcSeriesExtremes(chartSeries),
-    calendarYear: year,
-    calendarMonth: month,
   }
 }
 
-export function useDailySummary() {
+export function useDailySummary(calendarYear: number, calendarMonth: number) {
   const todayKey = format(new Date(), 'yyyy-MM-dd')
 
   return useQuery({
-    queryKey: [...dailySummaryQueryKey, todayKey],
+    queryKey: [
+      ...dailySummaryQueryKey,
+      todayKey,
+      calendarYear,
+      calendarMonth,
+    ],
     queryFn: async () => {
       const now = new Date()
-      const fetchRange = getSummaryFetchRange(now)
+      const fetchRange = getSummaryFetchRange(
+        now,
+        calendarYear,
+        calendarMonth,
+      )
       const records = await fetchSummaryRecords({
         fromIso: fetchRange.start.toISOString(),
         toIso: fetchRange.end.toISOString(),
       })
       return buildViewModel(records, now)
     },
+    placeholderData: keepPreviousData,
   })
 }

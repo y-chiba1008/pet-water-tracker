@@ -9,13 +9,21 @@ import {
   startOfWeek,
 } from 'date-fns'
 import { ja } from 'date-fns/locale'
-import { toLocalDateKey } from '@/features/visualization/domain/dailySummary'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import {
+  isCurrentYearMonth,
+  toLocalDateKey,
+} from '@/features/visualization/domain/dailySummary'
 import { cn } from '@/lib/utils'
 
 type CalendarViewProps = {
   year: number
   month: number
   dailyAmounts: Map<string, number>
+  canGoNext: boolean
+  onPrevMonth: () => void
+  onNextMonth: () => void
+  onGoToCurrentMonth: () => void
   today?: Date
 }
 
@@ -30,6 +38,10 @@ export function CalendarView({
   year,
   month,
   dailyAmounts,
+  canGoNext,
+  onPrevMonth,
+  onNextMonth,
+  onGoToCurrentMonth,
   today = new Date(),
 }: CalendarViewProps) {
   const monthStart = startOfMonth(new Date(year, month - 1, 1))
@@ -37,16 +49,51 @@ export function CalendarView({
   const gridStart = startOfWeek(monthStart, { weekStartsOn: 0 })
   const gridEnd = endOfWeek(monthEnd, { weekStartsOn: 0 })
   const days = eachDayOfInterval({ start: gridStart, end: gridEnd })
+  const isCurrentMonth = isCurrentYearMonth(year, month, today)
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between rounded-xl bg-white px-4 py-2 shadow-[0_2px_8px_-2px_rgba(120,113,108,0.06)]">
-        <span className="font-heading text-xl leading-7 font-semibold text-[#292524]">
-          {format(monthStart, 'yyyy年 M月', { locale: ja })}
-        </span>
-        <span className="rounded-full bg-[#E0F2FE] px-2.5 py-1 text-[11px] leading-[14px] font-medium text-[#0284C7]">
-          当月
-        </span>
+      <div className="flex items-center justify-between rounded-xl bg-white px-3 py-2 shadow-[0_2px_8px_-2px_rgba(120,113,108,0.06)]">
+        <div className="flex min-w-0 items-center gap-1">
+          <button
+            type="button"
+            aria-label="前の月"
+            onClick={onPrevMonth}
+            className="flex size-9 shrink-0 items-center justify-center rounded-full text-[#78716C] transition-colors hover:bg-[#F5EFEB]"
+          >
+            <ChevronLeft className="size-5" strokeWidth={1.75} />
+          </button>
+          <span className="font-heading truncate text-xl leading-7 font-semibold text-[#292524]">
+            {format(monthStart, 'yyyy年 M月', { locale: ja })}
+          </span>
+          <button
+            type="button"
+            aria-label="次の月"
+            disabled={!canGoNext}
+            onClick={onNextMonth}
+            className={cn(
+              'flex size-9 shrink-0 items-center justify-center rounded-full transition-colors',
+              canGoNext
+                ? 'text-[#78716C] hover:bg-[#F5EFEB]'
+                : 'cursor-not-allowed text-[#A8A29E]',
+            )}
+          >
+            <ChevronRight className="size-5" strokeWidth={1.75} />
+          </button>
+        </div>
+        {isCurrentMonth ? (
+          <span className="shrink-0 rounded-full bg-[#E0F2FE] px-2.5 py-1 text-[11px] leading-[14px] font-medium text-[#0284C7]">
+            当月
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={onGoToCurrentMonth}
+            className="shrink-0 rounded-full bg-[#F5EFEB] px-2.5 py-1 text-[11px] leading-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#eae1da] hover:text-[#292524]"
+          >
+            当月へ
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col rounded-xl bg-white p-4 shadow-[0_2px_8px_-2px_rgba(120,113,108,0.06)]">

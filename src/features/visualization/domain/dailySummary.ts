@@ -104,18 +104,55 @@ export function getMonthRange(
 }
 
 /**
- * データ取得に必要な全体レンジ（当月カレンダー + 直近30日グラフ）
+ * データ取得に必要な全体レンジ（表示カレンダー月 + 直近30日グラフ）
  */
-export function getSummaryFetchRange(now: Date = new Date()): {
+export function getSummaryFetchRange(
+  now: Date = new Date(),
+  calendarYear: number = now.getFullYear(),
+  calendarMonth: number = now.getMonth() + 1,
+): {
   start: Date
   end: Date
 } {
   const chart = getChartRange(now)
-  const month = getMonthRange(now.getFullYear(), now.getMonth() + 1)
+  const month = getMonthRange(calendarYear, calendarMonth)
   return {
     start: chart.start < month.start ? chart.start : month.start,
     end: chart.end > month.end ? chart.end : month.end,
   }
+}
+
+/** 年月を delta ヶ月ずらす（month は 1–12） */
+export function shiftYearMonth(
+  year: number,
+  month: number,
+  delta: number,
+): { year: number; month: number } {
+  const date = new Date(year, month - 1 + delta, 1)
+  return {
+    year: date.getFullYear(),
+    month: date.getMonth() + 1,
+  }
+}
+
+/** 指定年月が now の当月かどうか */
+export function isCurrentYearMonth(
+  year: number,
+  month: number,
+  now: Date = new Date(),
+): boolean {
+  return year === now.getFullYear() && month === now.getMonth() + 1
+}
+
+/** 指定年月が now の当月より未来かどうか */
+export function isFutureYearMonth(
+  year: number,
+  month: number,
+  now: Date = new Date(),
+): boolean {
+  if (year > now.getFullYear()) return true
+  if (year < now.getFullYear()) return false
+  return month > now.getMonth() + 1
 }
 
 /** 今月の記録がある日だけの1日平均と記録日数 */

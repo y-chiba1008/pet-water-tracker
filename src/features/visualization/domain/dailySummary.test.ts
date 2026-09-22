@@ -7,6 +7,9 @@ import {
   findLatestRecordedAt,
   getChartRange,
   getSummaryFetchRange,
+  isCurrentYearMonth,
+  isFutureYearMonth,
+  shiftYearMonth,
   toLocalDateKey,
 } from '@/features/visualization/domain/dailySummary'
 
@@ -101,6 +104,35 @@ describe('getSummaryFetchRange', () => {
     const late = getSummaryFetchRange(lateMonth)
     expect(toLocalDateKey(late.start)).toBe('2026-08-30')
     expect(toLocalDateKey(late.end)).toBe('2026-09-30')
+  })
+
+  it('extends the range when a past calendar month is selected', () => {
+    const now = new Date(2026, 8, 22, 12, 0)
+    const { start, end } = getSummaryFetchRange(now, 2026, 6)
+    expect(toLocalDateKey(start)).toBe('2026-06-01')
+    expect(toLocalDateKey(end)).toBe('2026-09-22')
+  })
+})
+
+describe('shiftYearMonth', () => {
+  it('shifts across year boundaries', () => {
+    expect(shiftYearMonth(2026, 1, -1)).toEqual({ year: 2025, month: 12 })
+    expect(shiftYearMonth(2025, 12, 1)).toEqual({ year: 2026, month: 1 })
+  })
+})
+
+describe('isCurrentYearMonth / isFutureYearMonth', () => {
+  const now = new Date(2026, 8, 22)
+
+  it('detects the current month', () => {
+    expect(isCurrentYearMonth(2026, 9, now)).toBe(true)
+    expect(isCurrentYearMonth(2026, 8, now)).toBe(false)
+  })
+
+  it('detects future months', () => {
+    expect(isFutureYearMonth(2026, 10, now)).toBe(true)
+    expect(isFutureYearMonth(2026, 9, now)).toBe(false)
+    expect(isFutureYearMonth(2026, 8, now)).toBe(false)
   })
 })
 

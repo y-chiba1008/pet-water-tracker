@@ -5,13 +5,31 @@ import { CalendarView } from '@/features/visualization/components/CalendarView'
 import { LineChartView } from '@/features/visualization/components/LineChartView'
 import { SummaryCards } from '@/features/visualization/components/SummaryCards'
 import { ViewSwitcher } from '@/features/visualization/components/ViewSwitcher'
+import {
+  isFutureYearMonth,
+  shiftYearMonth,
+} from '@/features/visualization/domain/dailySummary'
 import { useDailySummary } from '@/features/visualization/hooks/useDailySummary'
 import type { HomeViewMode } from '@/features/visualization/types'
 import { Button } from '@/components/ui/button'
 
+function initialYearMonth(now = new Date()) {
+  return {
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+  }
+}
+
 export function HomePage() {
   const [mode, setMode] = useState<HomeViewMode>('calendar')
-  const { data, isLoading, isError, refetch, isFetching } = useDailySummary()
+  const [calendarMonth, setCalendarMonth] = useState(initialYearMonth)
+  const { data, isLoading, isError, refetch, isFetching } = useDailySummary(
+    calendarMonth.year,
+    calendarMonth.month,
+  )
+
+  const nextMonth = shiftYearMonth(calendarMonth.year, calendarMonth.month, 1)
+  const canGoNext = !isFutureYearMonth(nextMonth.year, nextMonth.month)
 
   return (
     <AppShell title="ホーム">
@@ -54,9 +72,22 @@ export function HomePage() {
 
             {mode === 'calendar' ? (
               <CalendarView
-                year={data.calendarYear}
-                month={data.calendarMonth}
+                year={calendarMonth.year}
+                month={calendarMonth.month}
                 dailyAmounts={data.dailyAmounts}
+                canGoNext={canGoNext}
+                onPrevMonth={() =>
+                  setCalendarMonth((current) =>
+                    shiftYearMonth(current.year, current.month, -1),
+                  )
+                }
+                onNextMonth={() => {
+                  if (!canGoNext) return
+                  setCalendarMonth((current) =>
+                    shiftYearMonth(current.year, current.month, 1),
+                  )
+                }}
+                onGoToCurrentMonth={() => setCalendarMonth(initialYearMonth())}
               />
             ) : (
               <LineChartView
