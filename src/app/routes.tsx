@@ -7,6 +7,7 @@ import { HomePlaceholderPage } from '@/features/login/components/HomePlaceholder
 import { LoginPage } from '@/features/login/components/LoginPage'
 import { BowlListPage } from '@/features/bowls/components/BowlListPage'
 import { BowlRecordPage } from '@/features/bowl-records/components/BowlRecordPage'
+import { IndividualRecordPage } from '@/features/individual-records/components/IndividualRecordPage'
 
 export function AppRoutes() {
   return (
@@ -18,6 +19,10 @@ export function AppRoutes() {
       <Route element={<RequireAuth />}>
         <Route path="/" element={<HomePlaceholderPage />} />
         <Route path="/bowl-records" element={<BowlRecordPage />} />
+        <Route
+          path="/individual-records"
+          element={<IndividualRecordPage />}
+        />
         <Route path="/bowls" element={<BowlListPage />} />
         {/* 未知のパスはホームへ。未ログイン時は RequireAuth が /login へ誘導する */}
         <Route path="*" element={<Navigate to="/" replace />} />

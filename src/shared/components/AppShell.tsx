@@ -18,7 +18,6 @@ const navItems = [
     label: '個別給水',
     icon: NotebookPen,
     end: false,
-    disabled: true,
   },
   {
     to: '/bowls',
