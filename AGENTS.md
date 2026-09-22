@@ -223,6 +223,9 @@ pnpm seed-users
 # テスト
 pnpm test:run
 
+# カバレッジ（計測対象の lines 100%）
+pnpm test:coverage
+
 # Lint
 pnpm lint
 

@@ -109,7 +109,7 @@ Vitest 公式の `@vitest/coverage-v8` を用いる。
 | `pnpm test:coverage` | カバレッジ計測               |
 
 
-CI（`.github/workflows/ci.yml`）は現状 `pnpm test:run` でテスト通過をゲートする。カバレッジ閾値（計測対象の lines 100%）の CI ゲートは、計測導入時に合わせて検討・追加する。
+CI（`.github/workflows/ci.yml`）は `pnpm test:coverage` でテスト通過と計測対象の lines 100% をゲートする。
 
 ---
 

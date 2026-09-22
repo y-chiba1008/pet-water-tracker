@@ -27,5 +27,24 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'node',
+    setupFiles: ['./src/test/setup.ts'],
+    coverage: {
+      provider: 'v8',
+      include: [
+        'src/features/**/domain/**',
+        'src/features/**/lib/**',
+        'src/shared/lib/**',
+      ],
+      exclude: [
+        'src/shared/lib/supabaseClient.ts',
+        '**/*.test.ts',
+        '**/*.test.tsx',
+      ],
+      reporter: ['text', 'text-summary'],
+      thresholds: {
+        // 計測対象（domain / lib）の lines 100%。branches / functions は必須としない
+        lines: 100,
+      },
+    },
   },
 })

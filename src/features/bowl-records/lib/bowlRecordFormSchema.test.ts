@@ -47,6 +47,39 @@ describe('createNoActiveCycleFormSchema', () => {
       startAmountMl: 250,
     })
     expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe(
+        '現在時刻以前の日時を入力してください。',
+      )
+    }
+  })
+
+  it('rejects empty datetime and out-of-range amounts', () => {
+    const schema = createNoActiveCycleFormSchema({ now })
+
+    const emptyAt = schema.safeParse({
+      recordedAt: '',
+      startAmountMl: 250,
+    })
+    expect(emptyAt.success).toBe(false)
+
+    const invalidAt = schema.safeParse({
+      recordedAt: 'not-a-date',
+      startAmountMl: 250,
+    })
+    expect(invalidAt.success).toBe(false)
+
+    const tooLarge = schema.safeParse({
+      recordedAt: '2026-09-21T10:00',
+      startAmountMl: 5001,
+    })
+    expect(tooLarge.success).toBe(false)
+
+    const negative = schema.safeParse({
+      recordedAt: '2026-09-21T10:00',
+      startAmountMl: -1,
+    })
+    expect(negative.success).toBe(false)
   })
 })
 
@@ -111,6 +144,13 @@ describe('createActiveCycleFormSchema', () => {
       endAmountMl: 250,
     })
     expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(
+        result.error.issues.some(
+          (issue) => issue.message === '終了容量は開始容量以下にしてください。',
+        ),
+      ).toBe(true)
+    }
   })
 
   it('rejects datetime before previous start time', () => {
@@ -124,5 +164,10 @@ describe('createActiveCycleFormSchema', () => {
       endAmountMl: 80,
     })
     expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe(
+        '前回の記録時刻以降の日時を入力してください。',
+      )
+    }
   })
 })

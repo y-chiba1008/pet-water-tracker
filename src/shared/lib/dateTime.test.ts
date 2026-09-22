@@ -1,9 +1,45 @@
 import { describe, expect, it } from 'vitest'
 import {
+  dateTimeLocalToIso,
+  formatClockTime,
   formatElapsedLabel,
   formatExchangeElapsedLabel,
   formatLatestCompletedAtLabel,
+  toDateTimeLocalValue,
+  truncateToMinute,
 } from '@/shared/lib/dateTime'
+
+describe('toDateTimeLocalValue', () => {
+  it('formats a Date as YYYY-MM-DDTHH:mm', () => {
+    expect(toDateTimeLocalValue(new Date(2026, 8, 21, 9, 5))).toBe(
+      '2026-09-21T09:05',
+    )
+  })
+})
+
+describe('dateTimeLocalToIso', () => {
+  it('converts a datetime-local value to ISO', () => {
+    expect(dateTimeLocalToIso('2026-09-21T10:00')).toBe(
+      new Date('2026-09-21T10:00').toISOString(),
+    )
+  })
+})
+
+describe('truncateToMinute', () => {
+  it('clears seconds and milliseconds', () => {
+    const truncated = truncateToMinute(new Date('2026-09-21T10:00:45.123'))
+    expect(truncated.getSeconds()).toBe(0)
+    expect(truncated.getMilliseconds()).toBe(0)
+  })
+})
+
+describe('formatClockTime', () => {
+  it('formats HH:mm from an ISO timestamp', () => {
+    expect(formatClockTime(new Date(2026, 8, 21, 11, 30).toISOString())).toBe(
+      '11:30',
+    )
+  })
+})
 
 describe('formatElapsedLabel', () => {
   it('formats minutes, hours, and days without 約 prefix', () => {
@@ -18,6 +54,20 @@ describe('formatElapsedLabel', () => {
     expect(
       formatElapsedLabel(new Date('2026-09-19T12:00:00').toISOString(), now),
     ).toBe('2日')
+  })
+
+  it('uses at least 1 minute for very recent times', () => {
+    const now = new Date('2026-09-21T12:00:00')
+    expect(
+      formatElapsedLabel(new Date('2026-09-21T12:00:00').toISOString(), now),
+    ).toBe('1分')
+  })
+
+  it('includes remaining minutes when hours are not exact', () => {
+    const now = new Date('2026-09-21T12:30:00')
+    expect(
+      formatElapsedLabel(new Date('2026-09-21T10:00:00').toISOString(), now),
+    ).toBe('2時間30分')
   })
 })
 

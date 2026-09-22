@@ -29,11 +29,8 @@ export function createIndividualRecordFormSchema(
   options: SchemaOptions = {},
 ) {
   return baseSchema.superRefine((values, ctx) => {
+    // recordedAtField で Date.parse 可能な値のみ通る
     const recorded = truncateToMinute(new Date(values.recordedAt))
-    if (Number.isNaN(recorded.getTime())) {
-      return
-    }
-
     const now = truncateToMinute(options.now ?? new Date())
     if (recorded.getTime() > now.getTime()) {
       ctx.addIssue({

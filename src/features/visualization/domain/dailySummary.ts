@@ -188,10 +188,6 @@ export function calcMonthStats(
     recordedDays += 1
   }
 
-  if (dayCount <= 0) {
-    return { averageMl: null, recordedDays: 0 }
-  }
-
   return {
     averageMl: Math.round(sum / dayCount),
     recordedDays,
