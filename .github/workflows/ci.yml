@@ -29,7 +29,7 @@ jobs:
         run: pnpm lint
 
       - name: Test
-        run: pnpm test:run
+        run: pnpm test:coverage
 
       # tsc -b を含むため、型チェックもここで兼ねる
       - name: Build

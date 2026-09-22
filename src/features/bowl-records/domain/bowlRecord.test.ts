@@ -4,6 +4,7 @@ import {
   checkRecordedAtConsistency,
   isAbnormal,
   isActiveCycle,
+  recordedAtIssueMessage,
 } from '@/features/bowl-records/domain/bowlRecord'
 import type { BowlRecord } from '@/features/bowl-records/types'
 
@@ -97,5 +98,47 @@ describe('checkRecordedAtConsistency', () => {
         now: new Date('2026-09-21T08:00:45'),
       }),
     ).toEqual({ ok: true })
+  })
+
+  it('rejects an invalid datetime as future', () => {
+    expect(
+      checkRecordedAtConsistency('not-a-date', { now }),
+    ).toEqual({ ok: false, reason: 'future' })
+  })
+
+  it('ignores empty or invalid previousAt', () => {
+    expect(
+      checkRecordedAtConsistency('2026-09-21T10:00', {
+        previousAt: '',
+        now,
+      }),
+    ).toEqual({ ok: true })
+
+    expect(
+      checkRecordedAtConsistency('2026-09-21T10:00', {
+        previousAt: 'not-a-date',
+        now,
+      }),
+    ).toEqual({ ok: true })
+  })
+
+  it('accepts Date instances for recordedAt and previousAt', () => {
+    expect(
+      checkRecordedAtConsistency(new Date('2026-09-21T10:00:00'), {
+        previousAt: new Date('2026-09-21T08:00:00'),
+        now,
+      }),
+    ).toEqual({ ok: true })
+  })
+})
+
+describe('recordedAtIssueMessage', () => {
+  it('returns messages for each issue reason', () => {
+    expect(recordedAtIssueMessage('before_previous')).toBe(
+      '前回の記録時刻以降の日時を入力してください。',
+    )
+    expect(recordedAtIssueMessage('future')).toBe(
+      '現在時刻以前の日時を入力してください。',
+    )
   })
 })

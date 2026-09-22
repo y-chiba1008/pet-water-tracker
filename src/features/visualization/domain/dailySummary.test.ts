@@ -6,6 +6,7 @@ import {
   calcSeriesExtremes,
   findLatestRecordedAt,
   getChartRange,
+  getMonthRange,
   getSummaryFetchRange,
   isCurrentYearMonth,
   isFutureYearMonth,
@@ -16,6 +17,20 @@ import {
 describe('toLocalDateKey', () => {
   it('formats a Date as yyyy-MM-dd in local time', () => {
     expect(toLocalDateKey(new Date(2026, 8, 22, 15, 30))).toBe('2026-09-22')
+  })
+
+  it('formats an ISO string as yyyy-MM-dd in local time', () => {
+    expect(toLocalDateKey(new Date(2026, 8, 22, 15, 30).toISOString())).toBe(
+      '2026-09-22',
+    )
+  })
+})
+
+describe('getMonthRange', () => {
+  it('returns the first and last day of the month', () => {
+    const { start, end } = getMonthRange(2026, 9)
+    expect(toLocalDateKey(start)).toBe('2026-09-01')
+    expect(toLocalDateKey(end)).toBe('2026-09-30')
   })
 })
 
@@ -133,6 +148,8 @@ describe('isCurrentYearMonth / isFutureYearMonth', () => {
     expect(isFutureYearMonth(2026, 10, now)).toBe(true)
     expect(isFutureYearMonth(2026, 9, now)).toBe(false)
     expect(isFutureYearMonth(2026, 8, now)).toBe(false)
+    expect(isFutureYearMonth(2027, 1, now)).toBe(true)
+    expect(isFutureYearMonth(2025, 12, now)).toBe(false)
   })
 })
 
@@ -157,6 +174,27 @@ describe('calcMonthStats', () => {
     expect(calcMonthStats(new Map(), 2026, 9, now)).toEqual({
       averageMl: 0,
       recordedDays: 0,
+    })
+  })
+
+  it('returns null average for a future calendar month', () => {
+    const now = new Date(2026, 8, 5, 12, 0)
+    expect(calcMonthStats(new Map(), 2026, 10, now)).toEqual({
+      averageMl: null,
+      recordedDays: 0,
+    })
+  })
+
+  it('uses the full month length for a past calendar month', () => {
+    const totals = new Map([
+      ['2026-08-01', 100],
+      ['2026-08-31', 200],
+    ])
+    const now = new Date(2026, 8, 10, 12, 0)
+    // (100 + 200) / 31 days ≈ 10
+    expect(calcMonthStats(totals, 2026, 8, now)).toEqual({
+      averageMl: 10,
+      recordedDays: 2,
     })
   })
 })
@@ -192,5 +230,14 @@ describe('findLatestRecordedAt', () => {
 
   it('returns null for an empty list', () => {
     expect(findLatestRecordedAt([])).toBeNull()
+  })
+
+  it('skips invalid timestamps', () => {
+    expect(
+      findLatestRecordedAt([
+        { at: 'not-a-date' },
+        { at: '2026-09-21T10:00:00.000Z' },
+      ]),
+    ).toBe('2026-09-21T10:00:00.000Z')
   })
 })

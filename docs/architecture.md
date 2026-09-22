@@ -43,7 +43,7 @@ export function isAbnormal(start: number, end: number): boolean
 export function isActiveCycle(record: BowlRecord): boolean
 ```
 
-**理由**：テストツールにVitestを採用済み。副作用のない関数にしておくとユニットテストが書きやすく、業務ロジックの正しさを担保しやすい。
+**理由**：テストツールにVitestを採用済み。副作用のない関数にしておくとユニットテストが書きやすく、業務ロジックの正しさを担保しやすい。テスト対象・カバレッジの詳細方針は `docs/testing.md` を参照。
 
 ### 2.3 カスタムHook + TanStack Query（状態管理）
 
@@ -149,7 +149,7 @@ src/
 
 ### 補足ポイント
 
-- **`domain/` は `bowl-records` と `visualization` にだけ配置**。飲水量計算・異常値判定・日別集計という「テストしたいロジック」が集中している箇所だけ純粋関数として分離し、単純なCRUDのみの`bowls`や`individual-records`には無理に置かない。
+- **`domain/` は `bowl-records` と `visualization` にだけ配置**。飲水量計算・異常値判定・日別集計という「テストしたいロジック」が集中している箇所だけ純粋関数として分離し、単純なCRUDのみの`bowls`や`individual-records`には無理に置かない。単体テスト・カバレッジの範囲は `docs/testing.md` に従う。
 - **`api/` はSupabaseクライアント呼び出しの唯一の窓口**。コンポーネントやhookから直接`supabase.from(...)`を呼ばないルールを徹底すると、将来`house_id`が入ってもここだけの修正で済む。
 - **`shared/types/database.ts`** はSupabase CLIの型生成コマンド（`supabase gen types typescript`）の出力先として想定。
 

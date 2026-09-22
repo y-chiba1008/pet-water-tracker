@@ -56,4 +56,22 @@ describe('toLoginErrorMessage', () => {
       }),
     ).toBe('ログインに失敗しました。もう一度お試しください。')
   })
+
+  it('maps 422 and signups-not-allowed description to the blocked message', () => {
+    expect(
+      toLoginErrorMessage({
+        error: 'access_denied',
+        errorCode: '422',
+        errorDescription: null,
+      }),
+    ).toBe('このアカウントではログインできません。')
+
+    expect(
+      toLoginErrorMessage({
+        error: 'access_denied',
+        errorCode: null,
+        errorDescription: 'Signups not allowed for this instance',
+      }),
+    ).toBe('このアカウントではログインできません。')
+  })
 })

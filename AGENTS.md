@@ -223,6 +223,9 @@ pnpm seed-users
 # テスト
 pnpm test:run
 
+# カバレッジ（計測対象の lines 100%）
+pnpm test:coverage
+
 # Lint
 pnpm lint
 
@@ -273,6 +276,16 @@ pnpm check-gen-types
 
 - React Hook Form + Zod のセットで実装する
 - スキーマ定義（`z.object(...)`）はコンポーネントファイルの外に切り出す
+
+### テスト / カバレッジ
+
+詳細は `docs/testing.md` を参照。要点のみ:
+
+- **テスト対象を絞る**: `domain/`・Zod スキーマ・日付/エラーパース等の `lib/`。見た目用コンポーネント・Repository・薄い hook は原則書かない
+- **Page の通信失敗 UI** は Testing Library でピンポイントに書いてよい（hook をモックして定型文を確認）
+- **計測対象も domain / lib に限定**する（UI / api は除外。Page テストも lines 100% の対象外）
+- 計測対象内は **lines 100%** を目指す（アプリ全体の 100% は目指さない）
+- 異常系・境界など手動確認しにくい分岐にアサーションを置く
 
 ### スタイリング / UIデザイン
 

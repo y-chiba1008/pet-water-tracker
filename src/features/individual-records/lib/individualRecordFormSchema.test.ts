@@ -47,5 +47,28 @@ describe('createIndividualRecordFormSchema', () => {
       amountMl: 15,
     })
     expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe(
+        '現在時刻以前の日時を入力してください。',
+      )
+    }
+  })
+
+  it('rejects empty or invalid datetime', () => {
+    const schema = createIndividualRecordFormSchema({ now })
+
+    expect(
+      schema.safeParse({
+        recordedAt: '',
+        amountMl: 15,
+      }).success,
+    ).toBe(false)
+
+    expect(
+      schema.safeParse({
+        recordedAt: 'not-a-date',
+        amountMl: 15,
+      }).success,
+    ).toBe(false)
   })
 })
