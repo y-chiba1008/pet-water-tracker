@@ -51,7 +51,7 @@ function buildViewModel(
 
   const year = now.getFullYear()
   const month = now.getMonth() + 1
-  const monthStats = calcMonthStats(dailyAmounts, year, month)
+  const monthStats = calcMonthStats(dailyAmounts, year, month, now)
   const chartSeries = buildDailySeries(dailyAmounts, getChartRange(now))
 
   const latestRecordedAt = findLatestRecordedAt([

@@ -6,6 +6,8 @@ import {
   startOfDay,
   startOfMonth,
   subDays,
+  differenceInCalendarDays,
+  min as minDate,
 } from 'date-fns'
 import { calcWaterAmount } from '@/features/bowl-records/domain/bowlRecord'
 
@@ -155,29 +157,43 @@ export function isFutureYearMonth(
   return month > now.getMonth() + 1
 }
 
-/** 今月の記録がある日だけの1日平均と記録日数 */
+/**
+ * 今月の1日平均と記録日数。
+ * 平均 = 当月1日〜本日（含む）の給水量合計 / その日数
+ * 記録日数は同期間のうちデータがある日の数
+ */
 export function calcMonthStats(
   dailyAmounts: Map<string, number>,
   year: number,
   month: number,
+  now: Date = new Date(),
 ): { averageMl: number | null; recordedDays: number } {
-  const { start, end } = getMonthRange(year, month)
+  const { start, end: monthEnd } = getMonthRange(year, month)
+  const today = startOfDay(now)
+
+  if (today < start) {
+    return { averageMl: null, recordedDays: 0 }
+  }
+
+  const rangeEnd = minDate([today, startOfDay(monthEnd)])
+  const dayCount = differenceInCalendarDays(rangeEnd, start) + 1
+
   let sum = 0
   let recordedDays = 0
 
-  for (const day of eachDayOfInterval({ start, end })) {
+  for (const day of eachDayOfInterval({ start, end: rangeEnd })) {
     const amount = dailyAmounts.get(toLocalDateKey(day))
     if (amount === undefined) continue
     sum += amount
     recordedDays += 1
   }
 
-  if (recordedDays === 0) {
+  if (dayCount <= 0) {
     return { averageMl: null, recordedDays: 0 }
   }
 
   return {
-    averageMl: Math.round(sum / recordedDays),
+    averageMl: Math.round(sum / dayCount),
     recordedDays,
   }
 }

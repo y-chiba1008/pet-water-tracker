@@ -137,22 +137,25 @@ describe('isCurrentYearMonth / isFutureYearMonth', () => {
 })
 
 describe('calcMonthStats', () => {
-  it('averages only days that have records in the month', () => {
+  it('averages by elapsed days from the 1st through today', () => {
     const totals = new Map([
       ['2026-09-01', 100],
       ['2026-09-02', 200],
       ['2026-08-31', 999],
     ])
+    const now = new Date(2026, 8, 10, 15, 0)
 
-    expect(calcMonthStats(totals, 2026, 9)).toEqual({
-      averageMl: 150,
+    // (100 + 200) / 10 days = 30
+    expect(calcMonthStats(totals, 2026, 9, now)).toEqual({
+      averageMl: 30,
       recordedDays: 2,
     })
   })
 
-  it('returns null average when no recorded days', () => {
-    expect(calcMonthStats(new Map(), 2026, 9)).toEqual({
-      averageMl: null,
+  it('returns 0 average when there are no records yet this month', () => {
+    const now = new Date(2026, 8, 5, 12, 0)
+    expect(calcMonthStats(new Map(), 2026, 9, now)).toEqual({
+      averageMl: 0,
       recordedDays: 0,
     })
   })
