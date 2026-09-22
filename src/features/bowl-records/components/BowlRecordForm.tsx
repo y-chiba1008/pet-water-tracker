@@ -8,7 +8,6 @@ import {
   isAbnormal,
   recordedAtIssueMessage,
 } from '@/features/bowl-records/domain/bowlRecord'
-import { AbnormalValueWarning } from '@/features/bowl-records/components/AbnormalValueWarning'
 import {
   createActiveCycleFormSchema,
   createNoActiveCycleFormSchema,
@@ -305,13 +304,6 @@ function ActiveCycleForm({
               </span>
             </p>
           </div>
-        ) : null}
-
-        {abnormal && endAmountNumber !== null ? (
-          <AbnormalValueWarning
-            startAmountMl={current.start_amount_ml}
-            endAmountMl={endAmountNumber}
-          />
         ) : null}
 
         <AmountField

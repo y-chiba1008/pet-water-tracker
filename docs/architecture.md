@@ -103,8 +103,7 @@ src/
 │   ├── bowl-records/                   # 水皿記録
 │   │   ├── components/
 │   │   │   ├── BowlRecordPage.tsx
-│   │   │   ├── BowlRecordForm.tsx      # 進行中サイクル有無で表示切替
-│   │   │   └── AbnormalValueWarning.tsx
+│   │   │   └── BowlRecordForm.tsx      # 進行中サイクル有無で表示切替
 │   │   ├── hooks/
 │   │   │   ├── useActiveCycle.ts       # 進行中サイクル取得
 │   │   │   └── useBowlRecordMutations.ts # insert/update
