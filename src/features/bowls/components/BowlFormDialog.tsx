@@ -116,7 +116,7 @@ export function BowlFormDialog({
               </p>
             ) : (
               <DialogDescription className="pt-1 text-xs text-[#78716C]">
-                設置場所やお皿の種類が分かりやすい名前を入力してください。
+                設置場所や水皿の種類が分かりやすい名前を入力してください。
               </DialogDescription>
             )}
           </div>

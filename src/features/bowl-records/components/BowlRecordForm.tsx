@@ -312,7 +312,7 @@ function ActiveCycleForm({
           required={false}
           unitAccent="water"
           error={errors.startAmountMl?.message}
-          helperText="空欄のまま保存すると、サイクル終了のみ記録します（片付け）。"
+          helperText="空欄のまま保存すると、終了のみ記録します（片付け）。"
           presets={START_PRESETS}
           onPreset={(value) =>
             setValue('startAmountMl', value, { shouldValidate: true })
@@ -322,7 +322,7 @@ function ActiveCycleForm({
 
         {typeof startAmountMl === 'number' && !Number.isNaN(startAmountMl) ? (
           <p className="text-xs text-[#78716C]">
-            終了記録と同時に、{startAmountMl}ml で新しいサイクルを開始します。
+            終了記録と同時に、{startAmountMl}ml で新しい給水を開始します。
           </p>
         ) : null}
       </div>
@@ -352,13 +352,13 @@ function StatusBanner(props: StatusBannerProps) {
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="text-xs text-[#78716C]">前回の給水記録</span>
+              <span className="text-xs text-[#78716C]">前回の記録</span>
               <span className="rounded-full bg-white px-1.5 py-0.5 text-[11px] font-medium text-[#78716C]">
                 待機中
               </span>
             </div>
             <p className="mt-0.5 text-sm text-[#78716C]">
-              新しい給水サイクルを開始します
+              新しい給水を開始します。
             </p>
           </div>
         </div>
@@ -374,7 +374,7 @@ function StatusBanner(props: StatusBannerProps) {
         </div>
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
-            <span className="text-xs text-[#78716C]">前回の給水記録</span>
+            <span className="text-xs text-[#78716C]">前回の記録</span>
             <span className="rounded-full bg-[#E0F2FE] px-1.5 py-0.5 text-[11px] font-medium text-[#0284C7]">
               設置中
             </span>

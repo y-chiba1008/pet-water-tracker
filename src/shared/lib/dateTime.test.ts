@@ -6,18 +6,18 @@ import {
 } from '@/shared/lib/dateTime'
 
 describe('formatElapsedLabel', () => {
-  it('formats minutes, hours, and days with 約 prefix', () => {
+  it('formats minutes, hours, and days without 約 prefix', () => {
     const now = new Date('2026-09-21T12:00:00')
 
     expect(
       formatElapsedLabel(new Date('2026-09-21T11:30:00').toISOString(), now),
-    ).toBe('約30分')
+    ).toBe('30分')
     expect(
       formatElapsedLabel(new Date('2026-09-21T04:00:00').toISOString(), now),
-    ).toBe('約8時間')
+    ).toBe('8時間')
     expect(
       formatElapsedLabel(new Date('2026-09-19T12:00:00').toISOString(), now),
-    ).toBe('約2日')
+    ).toBe('2日')
   })
 })
 
@@ -35,7 +35,7 @@ describe('formatExchangeElapsedLabel', () => {
 })
 
 describe('formatLatestCompletedAtLabel', () => {
-  it('uses 本日 when the end time is today', () => {
+  it('uses 今日 when the end time is today', () => {
     const now = new Date('2026-09-21T18:00:00')
 
     expect(
@@ -43,7 +43,7 @@ describe('formatLatestCompletedAtLabel', () => {
         new Date('2026-09-21T11:30:00').toISOString(),
         now,
       ),
-    ).toBe('直近の完了: 本日 11:30')
+    ).toBe('前回の記録: 今日 11:30')
   })
 
   it('uses month/day when the end time is on another day', () => {
@@ -54,6 +54,6 @@ describe('formatLatestCompletedAtLabel', () => {
         new Date('2026-09-18T11:30:00').toISOString(),
         now,
       ),
-    ).toBe('直近の完了: 9/18 11:30')
+    ).toBe('前回の記録: 9/18 11:30')
   })
 })

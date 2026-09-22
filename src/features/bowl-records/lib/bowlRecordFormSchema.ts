@@ -5,28 +5,34 @@ import {
   recordedAtIssueMessage,
 } from '@/features/bowl-records/domain/bowlRecord'
 
-const amountField = z
-  .number({ error: '容量を入力してください' })
-  .int('整数で入力してください')
-  .min(0, '0ml以上で入力してください')
-  .max(5000, '5000ml以下で入力してください')
+const startAmountField = z
+  .number({ error: '新しい容量を入力してください。' })
+  .int('整数で入力してください。')
+  .min(0, '0ml以上で入力してください。')
+  .max(5000, '5000ml以下で入力してください。')
+
+const endAmountField = z
+  .number({ error: '残った容量を入力してください。' })
+  .int('整数で入力してください。')
+  .min(0, '0ml以上で入力してください。')
+  .max(5000, '5000ml以下で入力してください。')
 
 const recordedAtField = z
   .string()
-  .min(1, '日時を入力してください')
+  .min(1, '日時を入力してください。')
   .refine((value) => !Number.isNaN(Date.parse(value)), {
-    message: '正しい日時を入力してください',
+    message: '正しい日時を入力してください。',
   })
 
 const noActiveCycleBaseSchema = z.object({
   recordedAt: recordedAtField,
-  startAmountMl: amountField,
+  startAmountMl: startAmountField,
 })
 
 const activeCycleBaseSchema = z.object({
   recordedAt: recordedAtField,
-  endAmountMl: amountField,
-  startAmountMl: amountField.optional(),
+  endAmountMl: endAmountField,
+  startAmountMl: startAmountField.optional(),
 })
 
 export type NoActiveCycleFormValues = z.infer<typeof noActiveCycleBaseSchema>
@@ -75,7 +81,7 @@ export function createActiveCycleFormSchema(
       ctx.addIssue({
         code: 'custom',
         path: ['endAmountMl'],
-        message: '終了容量は開始容量以下にしてください',
+        message: '終了容量は開始容量以下にしてください。',
       })
     }
   })

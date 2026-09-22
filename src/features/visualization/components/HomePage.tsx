@@ -41,7 +41,7 @@ export function HomePage() {
         {isError ? (
           <div className="flex flex-col gap-3 pt-6">
             <p className="text-sm text-[#ba1a1a]">
-              集計データの取得に失敗しました。時間をおいて再度お試しください。
+              集計データの取得に失敗しました。もう一度お試しください。
             </p>
             <Button
               type="button"
@@ -50,7 +50,7 @@ export function HomePage() {
               onClick={() => void refetch()}
               className="h-12 rounded-full border-[#E7DFD8] bg-[#F5EFEB] text-base font-semibold text-[#78716C] hover:bg-[#eae1da]"
             >
-              再試行
+              再読み込み
             </Button>
           </div>
         ) : null}

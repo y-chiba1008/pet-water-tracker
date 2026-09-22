@@ -109,7 +109,7 @@ export function BowlRecordPage() {
         startAmountMl: values.startAmountMl,
         recordedBy: user.id,
       })
-      setSuccessMessage('給水サイクルを開始しました')
+      setSuccessMessage('給水を開始しました。')
     } catch {
       setFormError('保存に失敗しました。もう一度お試しください。')
     }
@@ -133,7 +133,7 @@ export function BowlRecordPage() {
           endAmountMl: values.endAmountMl,
           recordedBy: user.id,
         })
-        setSuccessMessage('サイクルを終了しました')
+        setSuccessMessage('給水を終了しました。')
         return
       }
 
@@ -146,7 +146,7 @@ export function BowlRecordPage() {
         startAmountMl: values.startAmountMl,
         recordedBy: user.id,
       })
-      setSuccessMessage('水皿の交換を記録しました')
+      setSuccessMessage('水皿の交換を記録しました。')
     } catch {
       setFormError('保存に失敗しました。もう一度お試しください。')
     }
@@ -162,7 +162,7 @@ export function BowlRecordPage() {
         {isError ? (
           <div className="flex flex-col items-center gap-3 py-8">
             <p className="text-sm text-destructive" role="alert">
-              データの取得に失敗しました。
+              水皿記録データの取得に失敗しました。もう一度お試しください。
             </p>
             <Button
               type="button"
