@@ -16,7 +16,8 @@
     "splinter": "bash scripts/check-splinter.sh",
     "gen-types": "supabase gen types typescript --local > src/shared/types/database.ts",
     "check-gen-types": "bash scripts/check-gen-types.sh",
-    "seed-users": "tsx scripts/seed-users.ts"
+    "seed-users": "tsx scripts/seed-users.ts",
+    "db-backup": "bash scripts/backup-prod-db.sh"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",
