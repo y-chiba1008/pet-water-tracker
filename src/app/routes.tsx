@@ -3,11 +3,11 @@ import {
   GuestOnly,
   RequireAuth,
 } from '@/features/login/components/AuthGuard'
-import { HomePlaceholderPage } from '@/features/login/components/HomePlaceholderPage'
 import { LoginPage } from '@/features/login/components/LoginPage'
 import { BowlListPage } from '@/features/bowls/components/BowlListPage'
 import { BowlRecordPage } from '@/features/bowl-records/components/BowlRecordPage'
 import { IndividualRecordPage } from '@/features/individual-records/components/IndividualRecordPage'
+import { HomePage } from '@/features/visualization/components/HomePage'
 
 export function AppRoutes() {
   return (
@@ -17,7 +17,7 @@ export function AppRoutes() {
       </Route>
 
       <Route element={<RequireAuth />}>
-        <Route path="/" element={<HomePlaceholderPage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/bowl-records" element={<BowlRecordPage />} />
         <Route
           path="/individual-records"

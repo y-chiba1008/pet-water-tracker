@@ -9,11 +9,15 @@ import type {
   InsertStartRecordInput,
   UpdateEndRecordInput,
 } from '@/features/bowl-records/types'
+import { dailySummaryQueryKey } from '@/features/visualization/hooks/useDailySummary'
 
 async function invalidateBowlRecordQueries(
   queryClient: ReturnType<typeof useQueryClient>,
 ) {
-  await queryClient.invalidateQueries({ queryKey: ['bowl-records'] })
+  await Promise.all([
+    queryClient.invalidateQueries({ queryKey: ['bowl-records'] }),
+    queryClient.invalidateQueries({ queryKey: dailySummaryQueryKey }),
+  ])
 }
 
 export function useInsertStartRecord() {
