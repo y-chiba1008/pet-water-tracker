@@ -31,7 +31,7 @@ export function formatElapsedLabel(
   fromIso: string,
   to: Date = new Date(),
 ): string {
-  return `約${formatElapsedDuration(fromIso, to)}`
+  return formatElapsedDuration(fromIso, to)
 }
 
 /** 水皿一覧向け: 「交換から8時間経過」 */
@@ -42,7 +42,7 @@ export function formatExchangeElapsedLabel(
   return `交換から${formatElapsedDuration(fromIso, to)}経過`
 }
 
-/** 水皿一覧向け: 「直近の完了: 本日 11:30」 */
+/** 水皿一覧向け: 「前回の記録: 今日 11:30」 */
 export function formatLatestCompletedAtLabel(
   endTimeIso: string,
   now: Date = new Date(),
@@ -51,10 +51,10 @@ export function formatLatestCompletedAtLabel(
   const time = format(end, 'HH:mm')
 
   if (isSameDay(end, now)) {
-    return `直近の完了: 本日 ${time}`
+    return `前回の記録: 今日 ${time}`
   }
 
-  return `直近の完了: ${format(end, 'M/d')} ${time}`
+  return `前回の記録: ${format(end, 'M/d')} ${time}`
 }
 
 function formatElapsedDuration(fromIso: string, to: Date): string {

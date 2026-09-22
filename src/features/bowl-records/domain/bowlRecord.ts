@@ -66,8 +66,8 @@ export function checkRecordedAtConsistency(
 export function recordedAtIssueMessage(reason: RecordedAtIssue): string {
   switch (reason) {
     case 'before_previous':
-      return '前回の記録時刻以降の日時を入力してください'
+      return '前回の記録時刻以降の日時を入力してください。'
     case 'future':
-      return '現在時刻以前の日時を入力してください'
+      return '現在時刻以前の日時を入力してください。'
   }
 }

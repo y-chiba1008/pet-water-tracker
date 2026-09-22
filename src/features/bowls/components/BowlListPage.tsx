@@ -192,7 +192,7 @@ export function BowlListPage() {
         {listError ? (
           <div className="flex flex-col items-center gap-3 py-8">
             <p className="text-sm text-destructive" role="alert">
-              水皿一覧の取得に失敗しました。
+              水皿一覧の取得に失敗しました。もう一度お試しください。
             </p>
             <Button
               type="button"

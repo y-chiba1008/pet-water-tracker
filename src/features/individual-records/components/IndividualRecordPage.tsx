@@ -43,7 +43,7 @@ export function IndividualRecordPage() {
         recordedBy: user.id,
       })
       setFormKey((key) => key + 1)
-      setSuccessMessage(`飲水量 ${values.amountMl}ml を記録しました`)
+      setSuccessMessage(`飲水量 ${values.amountMl}ml を記録しました。`)
     } catch {
       setFormError('保存に失敗しました。もう一度お試しください。')
     }

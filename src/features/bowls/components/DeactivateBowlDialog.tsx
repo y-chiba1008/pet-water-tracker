@@ -39,7 +39,7 @@ export function DeactivateBowlDialog({
           <AlertDialogDescription className="text-xs text-[#78716C]">
             「
             <span className="font-semibold text-[#292524]">{bowlName}</span>
-            」の登録を解除します。過去の飲水量ログは保持されます。
+            」を削除します。過去の飲水量ログは保持されます。
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -57,7 +57,7 @@ export function DeactivateBowlDialog({
             className="h-12 flex-1 rounded-full bg-[#F5EFEB] text-base font-semibold text-[#78716C] hover:bg-[#eae1da]"
             onClick={() => onOpenChange(false)}
           >
-            やめる
+            キャンセル
           </Button>
           <Button
             type="button"

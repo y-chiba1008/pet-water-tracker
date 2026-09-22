@@ -83,7 +83,7 @@ export function CalendarView({
         </div>
         {isCurrentMonth ? (
           <span className="shrink-0 rounded-full bg-[#E0F2FE] px-2.5 py-1 text-[11px] leading-[14px] font-medium text-[#0284C7]">
-            当月
+            今月
           </span>
         ) : (
           <button
@@ -91,7 +91,7 @@ export function CalendarView({
             onClick={onGoToCurrentMonth}
             className="shrink-0 rounded-full bg-[#F5EFEB] px-2.5 py-1 text-[11px] leading-[14px] font-medium text-[#78716C] transition-colors hover:bg-[#eae1da] hover:text-[#292524]"
           >
-            当月へ
+            今月へ
           </button>
         )}
       </div>

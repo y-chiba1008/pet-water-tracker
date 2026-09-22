@@ -2,16 +2,16 @@ import { z } from 'zod'
 import { truncateToMinute } from '@/shared/lib/dateTime'
 
 const amountField = z
-  .number({ error: '飲水量を入力してください' })
-  .int('整数で入力してください')
-  .min(1, '1ml以上で入力してください')
-  .max(500, '500ml以下で入力してください')
+  .number({ error: '飲水量を入力してください。' })
+  .int('整数で入力してください。')
+  .min(1, '1ml以上で入力してください。')
+  .max(500, '500ml以下で入力してください。')
 
 const recordedAtField = z
   .string()
-  .min(1, '日時を入力してください')
+  .min(1, '日時を入力してください。')
   .refine((value) => !Number.isNaN(Date.parse(value)), {
-    message: '正しい日時を入力してください',
+    message: '正しい日時を入力してください。',
   })
 
 const baseSchema = z.object({
@@ -39,7 +39,7 @@ export function createIndividualRecordFormSchema(
       ctx.addIssue({
         code: 'custom',
         path: ['recordedAt'],
-        message: '現在時刻以前の日時を入力してください',
+        message: '現在時刻以前の日時を入力してください。',
       })
     }
   })

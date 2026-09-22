@@ -59,7 +59,7 @@ export function LineChartView({
           </span>
         </div>
         <span className="rounded-full bg-[#F5EFEB] px-2.5 py-1 text-[11px] leading-[14px] font-medium text-[#78716C]">
-          1ヶ月
+          30日間
         </span>
       </div>
 
@@ -128,7 +128,7 @@ export function LineChartView({
                   boxShadow: '0 8px 20px -4px rgba(120, 113, 108, 0.12)',
                   fontSize: 12,
                 }}
-                formatter={(value) => [`${String(value)} ml`, '合計']}
+                formatter={(value) => [`${String(value)}ml`, '合計']}
                 labelFormatter={(label) => String(label)}
               />
               <Area
@@ -146,7 +146,7 @@ export function LineChartView({
 
         <div className="mt-2 flex items-center gap-1 pt-1 text-xs leading-[18px] text-[#78716C]">
           <Info className="size-4 text-[#0284C7]" strokeWidth={1.75} />
-          直近30日間の合計値を自動集計しています
+          直近30日間の合計値を自動集計しています。
         </div>
       </div>
     </div>

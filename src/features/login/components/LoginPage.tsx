@@ -101,7 +101,7 @@ export function LoginPage() {
 
               {isSubmitting ? (
                 <div className="animate-pulse rounded-full bg-[#E0F2FE] px-2 py-1 text-center text-[11px] leading-[14px] font-medium tracking-wide text-[#0284C7]">
-                  認証画面へリダイレクト中...
+                  認証画面へリダイレクト中…
                 </div>
               ) : null}
 

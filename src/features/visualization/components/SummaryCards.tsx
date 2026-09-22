@@ -24,7 +24,7 @@ export function SummaryCards({
             fill="currentColor"
           />
           <span className="text-[11px] leading-[14px] font-medium tracking-wide">
-            きょうの合計
+            今日の合計
           </span>
         </div>
         <div className="relative z-10 mt-2 flex items-baseline gap-1">
@@ -35,8 +35,8 @@ export function SummaryCards({
         </div>
         <div className="relative z-10 mt-1 text-[11px] leading-[14px] font-medium text-[#0EA5E9]">
           {latestRecordedAtLabel
-            ? `直近記録 ${latestRecordedAtLabel}`
-            : '直近記録 —'}
+            ? `前回の記録 ${latestRecordedAtLabel}`
+            : '前回の記録 —'}
         </div>
       </div>
 
