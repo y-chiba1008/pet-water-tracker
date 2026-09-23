@@ -3,7 +3,7 @@ import { NavLink } from 'react-router'
 import { Bath, Droplet, NotebookPen, SlidersHorizontal } from 'lucide-react'
 import { UserMenu } from '@/shared/components/UserMenu'
 import { cn } from '@/lib/utils'
-import logo from '@/assets/logo.png'
+import icon from '@/assets/icon.png'
 
 const navItems = [
   { to: '/', label: 'ホーム', icon: Droplet, end: true },
@@ -41,7 +41,7 @@ export function AppShell({ title, children, headerAction }: AppShellProps) {
         <div className="mx-auto flex h-16 w-full max-w-screen-md items-center justify-between px-4">
           <div className="flex min-w-0 items-center gap-2">
             <img
-              src={logo}
+              src={icon}
               alt=""
               className="size-8 shrink-0 rounded-full object-contain"
             />
