@@ -8,7 +8,7 @@ import {
 import { APP_VERSION } from '@/shared/lib/appVersion'
 import { Button } from '@/components/ui/button'
 import googleGLogoLight from '@/assets/google-g-logo-light.svg'
-import logo from '@/assets/logo.png'
+import icon from '@/assets/icon.png'
 
 function readCallbackErrorMessage(): string | null {
   const callbackError = parseAuthCallbackError(window.location.href)
@@ -63,7 +63,7 @@ export function LoginPage() {
             />
             <div className="relative flex size-24 items-center justify-center rounded-full bg-white p-2 shadow-[0_8px_24px_rgba(120,113,108,0.12)]">
               <img
-                src={logo}
+                src={icon}
                 alt="猫の飲水量記録"
                 className="size-full rounded-full object-contain"
               />

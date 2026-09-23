@@ -3,7 +3,7 @@ import { NavLink } from 'react-router'
 import { Bath, Droplet, NotebookPen, SlidersHorizontal } from 'lucide-react'
 import { UserMenu } from '@/shared/components/UserMenu'
 import { cn } from '@/lib/utils'
-import logo from '@/assets/logo.png'
+import icon from '@/assets/icon.png'
 
 const navItems = [
   { to: '/', label: 'ホーム', icon: Droplet, end: true },
@@ -40,11 +40,19 @@ export function AppShell({ title, children, headerAction }: AppShellProps) {
       <header className="fixed top-0 z-40 w-full bg-[#fff8f5]/80 shadow-[0_1px_8px_rgba(0,0,0,0.04)] backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-screen-md items-center justify-between px-4">
           <div className="flex min-w-0 items-center gap-2">
-            <img
-              src={logo}
-              alt=""
-              className="size-8 shrink-0 rounded-full object-contain"
-            />
+            <div className="group relative size-8 shrink-0">
+              <div
+                aria-hidden
+                className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-[#38BDF8]/30 to-[#ffb690]/40 blur-md transition-all duration-300 group-hover:blur-lg"
+              />
+              <div className="relative flex size-8 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_rgba(120,113,108,0.12)]">
+                <img
+                  src={icon}
+                  alt=""
+                  className="size-full rounded-full object-contain"
+                />
+              </div>
+            </div>
             <div className="flex min-w-0 flex-col">
               <span className="truncate text-[11px] leading-[14px] font-medium tracking-wide text-[#78716C]">
                 猫の飲水量記録
