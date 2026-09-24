@@ -24,6 +24,14 @@ export async function signOut() {
 }
 
 export async function getSession() {
+  // OAuth コールバック（PKCE のコード交換）の失敗は getSession() では
+  // エラーにならず session: null になるため、初期化結果から拾う
+  const { error: initError } = await supabase.auth.initialize()
+
+  if (initError) {
+    throw initError
+  }
+
   const { data, error } = await supabase.auth.getSession()
 
   if (error) {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { signInWithGoogle } from '@/features/login/api/authRepository'
+import { useAuth } from '@/features/login/hooks/useAuth'
 import {
   parseAuthCallbackError,
   toLoginErrorMessage,
@@ -17,10 +18,15 @@ function readCallbackErrorMessage(): string | null {
 
 export function LoginPage() {
   const navigate = useNavigate()
+  const { sessionError } = useAuth()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(
     readCallbackErrorMessage,
   )
+
+  // 明示的なエラー（OAuthコールバック・ログイン試行）を優先し、
+  // なければ初回セッション確認失敗のエラーを表示する
+  const displayErrorMessage = errorMessage ?? sessionError
 
   useEffect(() => {
     if (!parseAuthCallbackError(window.location.href)) {
@@ -105,9 +111,9 @@ export function LoginPage() {
                 </div>
               ) : null}
 
-              {errorMessage ? (
+              {displayErrorMessage ? (
                 <p className="text-center text-sm text-destructive" role="alert">
-                  {errorMessage}
+                  {displayErrorMessage}
                 </p>
               ) : null}
             </div>
