@@ -25,19 +25,22 @@ type SchemaOptions = {
   now?: Date
 }
 
+/**
+ * 未来日時チェックはフィールド単位で行う。
+ * object 全体の superRefine だと、飲水量が未入力・不正な間は実行されずエラーが表示されない。
+ */
 export function createIndividualRecordFormSchema(
   options: SchemaOptions = {},
 ) {
-  return baseSchema.superRefine((values, ctx) => {
-    // recordedAtField で Date.parse 可能な値のみ通る
-    const recorded = truncateToMinute(new Date(values.recordedAt))
-    const now = truncateToMinute(options.now ?? new Date())
-    if (recorded.getTime() > now.getTime()) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['recordedAt'],
-        message: '現在時刻以前の日時を入力してください。',
-      })
-    }
+  return baseSchema.extend({
+    recordedAt: recordedAtField.refine(
+      (value) => {
+        const recorded = truncateToMinute(new Date(value))
+        if (Number.isNaN(recorded.getTime())) return true
+        const now = truncateToMinute(options.now ?? new Date())
+        return recorded.getTime() <= now.getTime()
+      },
+      { message: '現在時刻以前の日時を入力してください。' },
+    ),
   })
 }
