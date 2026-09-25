@@ -11,7 +11,10 @@ import {
 } from '@/features/visualization/domain/dailySummary'
 import { useDailySummary } from '@/features/visualization/hooks/useDailySummary'
 import type { HomeViewMode } from '@/features/visualization/types'
-import { Button } from '@/components/ui/button'
+import {
+  FetchErrorMessage,
+  LoadingMessage,
+} from '@/shared/components/QueryStatusMessage'
 
 function initialYearMonth(now = new Date()) {
   return {
@@ -34,25 +37,15 @@ export function HomePage() {
   return (
     <AppShell title="ホーム">
       <div className="flex flex-col gap-4 pb-4">
-        {isLoading ? (
-          <p className="pt-6 text-sm text-[#78716C]">読み込み中…</p>
-        ) : null}
+        {isLoading ? <LoadingMessage className="pt-12" /> : null}
 
         {isError ? (
-          <div className="flex flex-col gap-3 pt-6">
-            <p className="text-sm text-[#ba1a1a]">
-              集計データの取得に失敗しました。もう一度お試しください。
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isFetching}
-              onClick={() => void refetch()}
-              className="h-12 rounded-full border-[#E7DFD8] bg-[#F5EFEB] text-base font-semibold text-[#78716C] hover:bg-[#eae1da]"
-            >
-              再読み込み
-            </Button>
-          </div>
+          <FetchErrorMessage
+            className="pt-12"
+            message="集計データの取得に失敗しました。もう一度お試しください。"
+            isRetrying={isFetching}
+            onRetry={() => void refetch()}
+          />
         ) : null}
 
         {data ? (

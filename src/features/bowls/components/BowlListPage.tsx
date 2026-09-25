@@ -23,6 +23,10 @@ import {
   formatLatestCompletedAtLabel,
 } from '@/shared/lib/dateTime'
 import { AppShell } from '@/shared/components/AppShell'
+import {
+  FetchErrorMessage,
+  LoadingMessage,
+} from '@/shared/components/QueryStatusMessage'
 import { Button } from '@/components/ui/button'
 
 type FormDialogState =
@@ -185,24 +189,14 @@ export function BowlListPage() {
           </Button>
         </div>
 
-        {listLoading ? (
-          <p className="py-8 text-center text-sm text-[#78716C]">読み込み中…</p>
-        ) : null}
+        {listLoading ? <LoadingMessage /> : null}
 
         {listError ? (
-          <div className="flex flex-col items-center gap-3 py-8">
-            <p className="text-sm text-destructive" role="alert">
-              水皿一覧の取得に失敗しました。もう一度お試しください。
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={listFetching}
-              onClick={handleRefetch}
-            >
-              再読み込み
-            </Button>
-          </div>
+          <FetchErrorMessage
+            message="水皿一覧の取得に失敗しました。もう一度お試しください。"
+            isRetrying={listFetching}
+            onRetry={handleRefetch}
+          />
         ) : null}
 
         {!listLoading && !listError && bowls.length === 0 ? (

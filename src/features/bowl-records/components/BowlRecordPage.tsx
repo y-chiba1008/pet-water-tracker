@@ -17,6 +17,10 @@ import type { BowlFormState } from '@/features/bowl-records/types'
 import { useBowls } from '@/features/bowls/hooks/useBowls'
 import { useAuth } from '@/features/login/hooks/useAuth'
 import { AppShell } from '@/shared/components/AppShell'
+import {
+  FetchErrorMessage,
+  LoadingMessage,
+} from '@/shared/components/QueryStatusMessage'
 import { Button } from '@/components/ui/button'
 
 export function BowlRecordPage() {
@@ -155,27 +159,17 @@ export function BowlRecordPage() {
   return (
     <AppShell title="水皿交換">
       <div className="relative flex flex-col gap-4 pt-4">
-        {isLoading ? (
-          <p className="py-8 text-center text-sm text-[#78716C]">読み込み中…</p>
-        ) : null}
+        {isLoading ? <LoadingMessage /> : null}
 
         {isError ? (
-          <div className="flex flex-col items-center gap-3 py-8">
-            <p className="text-sm text-destructive" role="alert">
-              水皿記録データの取得に失敗しました。もう一度お試しください。
-            </p>
-            <Button
-              type="button"
-              variant="outline"
-              disabled={bowlsFetching || cyclesFetching}
-              onClick={() => {
-                void refetchBowls()
-                void refetchCycles()
-              }}
-            >
-              再読み込み
-            </Button>
-          </div>
+          <FetchErrorMessage
+            message="水皿記録データの取得に失敗しました。もう一度お試しください。"
+            isRetrying={bowlsFetching || cyclesFetching}
+            onRetry={() => {
+              void refetchBowls()
+              void refetchCycles()
+            }}
+          />
         ) : null}
 
         {!isLoading && !isError && bowls.length === 0 ? (
