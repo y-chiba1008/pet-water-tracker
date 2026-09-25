@@ -194,18 +194,20 @@ export function calcMonthStats(
   }
 }
 
-/** 記録ありの日だけから最高・最低を求める（なければ null） */
+/**
+ * 期間内の全日から最高・最低を求める（記録なしの日は 0ml として含める）。
+ * 全日が 0ml なら null
+ */
 export function calcSeriesExtremes(
   series: DailyAmount[],
 ): { maxMl: number; minMl: number } | null {
-  const recorded = series.filter((day) => day.amountMl !== 0)
-  if (recorded.length === 0) {
+  if (series.every((day) => day.amountMl === 0)) {
     return null
   }
 
-  let maxMl = recorded[0].amountMl
-  let minMl = recorded[0].amountMl
-  for (const day of recorded.slice(1)) {
+  let maxMl = series[0].amountMl
+  let minMl = series[0].amountMl
+  for (const day of series.slice(1)) {
     if (day.amountMl > maxMl) maxMl = day.amountMl
     if (day.amountMl < minMl) minMl = day.amountMl
   }

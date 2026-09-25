@@ -200,20 +200,34 @@ describe('calcMonthStats', () => {
 })
 
 describe('calcSeriesExtremes', () => {
-  it('ignores zero days', () => {
+  it('treats days without records as 0ml', () => {
     expect(
       calcSeriesExtremes([
         { date: '2026-09-01', amountMl: 0 },
         { date: '2026-09-02', amountMl: 130 },
         { date: '2026-09-03', amountMl: 175 },
       ]),
-    ).toEqual({ maxMl: 175, minMl: 130 })
+    ).toEqual({ maxMl: 175, minMl: 0 })
+  })
+
+  it('returns the lowest recorded amount when every day has records', () => {
+    expect(
+      calcSeriesExtremes([
+        { date: '2026-09-01', amountMl: 150 },
+        { date: '2026-09-02', amountMl: 30 },
+        { date: '2026-09-03', amountMl: 175 },
+      ]),
+    ).toEqual({ maxMl: 175, minMl: 30 })
   })
 
   it('returns null when all days are zero', () => {
     expect(
       calcSeriesExtremes([{ date: '2026-09-01', amountMl: 0 }]),
     ).toBeNull()
+  })
+
+  it('returns null when the series is empty', () => {
+    expect(calcSeriesExtremes([])).toBeNull()
   })
 })
 

@@ -43,6 +43,12 @@ export function isAbnormal(start: number, end: number): boolean
 export function isActiveCycle(record: BowlRecord): boolean
 ```
 
+日別集計では、**データが存在しない日は 0ml として扱う**。
+
+- 今月の1日平均：当月1日〜本日の全日数で割る（記録なしの日は合計に加算しないが日数には含める）
+- グラフの最高/最低：直近30日の全日を対象にし、記録なしの日は 0ml として含める（記録がある日が1日でもあれば最低は 0ml になりうる）
+- カレンダー：記録なしの日は 0ml と区別して `—` を表示する（表示上の区別のみ）
+
 **理由**：テストツールにVitestを採用済み。副作用のない関数にしておくとユニットテストが書きやすく、業務ロジックの正しさを担保しやすい。テスト対象・カバレッジの詳細方針は `docs/testing.md` を参照。
 
 ### 2.3 カスタムHook + TanStack Query（状態管理）
