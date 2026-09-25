@@ -73,7 +73,7 @@ export function AppShell({ title, children, headerAction }: AppShellProps) {
         {children}
       </main>
 
-      <nav className="fixed bottom-0 z-40 w-full bg-[#fff8f5]/85 pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-4px_16px_rgba(120,113,108,0.08)] backdrop-blur-xl">
+      <nav className="fixed bottom-0 z-40 w-full bg-[#fff8f5] pb-[env(safe-area-inset-bottom,0px)] shadow-[0_-4px_16px_rgba(120,113,108,0.08)]">
         <div className="mx-auto grid h-16 max-w-screen-md grid-cols-4 items-center px-1">
           {navItems.map((item) => {
             const Icon = item.icon
