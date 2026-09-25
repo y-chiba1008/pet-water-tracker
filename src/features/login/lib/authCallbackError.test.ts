@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  hasAuthCallbackParams,
   parseAuthCallbackError,
   toLoginErrorMessage,
 } from '@/features/login/lib/authCallbackError'
@@ -33,6 +34,26 @@ describe('parseAuthCallbackError', () => {
       errorCode: '422',
       errorDescription: 'Signups not allowed for this instance',
     })
+  })
+})
+
+describe('hasAuthCallbackParams', () => {
+  it('returns false when no callback params exist', () => {
+    expect(hasAuthCallbackParams('http://localhost:3000/login')).toBe(false)
+  })
+
+  it('returns true when a PKCE code remains in the query string', () => {
+    expect(
+      hasAuthCallbackParams('http://localhost:3000/login?code=abc-123'),
+    ).toBe(true)
+  })
+
+  it('returns true when error params exist', () => {
+    expect(
+      hasAuthCallbackParams(
+        'http://localhost:3000/login#error=access_denied&error_code=422',
+      ),
+    ).toBe(true)
   })
 })
 

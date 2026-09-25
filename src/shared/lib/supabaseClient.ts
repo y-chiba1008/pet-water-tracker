@@ -13,4 +13,10 @@ if (!supabaseUrl || !supabasePublishableKey) {
 export const supabase = createClient<Database>(
   supabaseUrl,
   supabasePublishableKey,
+  {
+    auth: {
+      // implicit フローだとトークンが URL のハッシュに載るため、PKCE を使う
+      flowType: 'pkce',
+    },
+  },
 )

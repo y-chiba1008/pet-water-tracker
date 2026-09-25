@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router'
 import { signInWithGoogle } from '@/features/login/api/authRepository'
 import { useAuth } from '@/features/login/hooks/useAuth'
 import {
+  hasAuthCallbackParams,
   parseAuthCallbackError,
   toLoginErrorMessage,
 } from '@/features/login/lib/authCallbackError'
@@ -29,11 +30,12 @@ export function LoginPage() {
   const displayErrorMessage = errorMessage ?? sessionError
 
   useEffect(() => {
-    if (!parseAuthCallbackError(window.location.href)) {
+    if (!hasAuthCallbackParams(window.location.href)) {
       return
     }
 
-    // 表示用にメッセージは state に残し、URL からはエラーパラメータを除去する
+    // LoginPage は認証の初期化完了後に描画されるため、ここで残っている code は
+    // 交換に失敗したもの。表示用にメッセージは state に残し、URL からは除去する
     void navigate('/login', { replace: true })
   }, [navigate])
 
