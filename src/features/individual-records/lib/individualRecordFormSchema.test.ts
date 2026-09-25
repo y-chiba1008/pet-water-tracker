@@ -54,6 +54,44 @@ describe('createIndividualRecordFormSchema', () => {
     }
   })
 
+  it('reports future datetime even when amount is not entered yet', () => {
+    const schema = createIndividualRecordFormSchema({ now })
+    const result = schema.safeParse({
+      recordedAt: '2026-09-22T13:00',
+      amountMl: undefined,
+    })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      const recordedAtIssues = result.error.issues.filter(
+        (issue) => issue.path[0] === 'recordedAt',
+      )
+      expect(recordedAtIssues.map((issue) => issue.message)).toEqual([
+        '現在時刻以前の日時を入力してください。',
+      ])
+    }
+  })
+
+  it('accepts datetime in the same minute as now', () => {
+    const schema = createIndividualRecordFormSchema({
+      now: new Date('2026-09-22T12:00:45'),
+    })
+    expect(
+      schema.safeParse({ recordedAt: '2026-09-22T12:00', amountMl: 15 })
+        .success,
+    ).toBe(true)
+  })
+
+  it('reports only the format error for invalid datetime', () => {
+    const schema = createIndividualRecordFormSchema({ now })
+    const result = schema.safeParse({ recordedAt: 'not-a-date', amountMl: 15 })
+    expect(result.success).toBe(false)
+    if (!result.success) {
+      expect(result.error.issues.map((issue) => issue.message)).toEqual([
+        '正しい日時を入力してください。',
+      ])
+    }
+  })
+
   it('rejects empty or invalid datetime', () => {
     const schema = createIndividualRecordFormSchema({ now })
 
