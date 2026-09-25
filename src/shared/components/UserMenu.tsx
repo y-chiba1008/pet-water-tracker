@@ -17,60 +17,78 @@ import {
 export function UserMenu() {
   const { user } = useAuth()
   const [isSigningOut, setIsSigningOut] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const avatarUrl = getAvatarUrl(user)
 
   async function handleSignOut() {
     setIsSigningOut(true)
+    setErrorMessage(null)
     try {
       await signOut()
     } catch {
+      setErrorMessage('ログアウトに失敗しました。もう一度お試しください。')
       setIsSigningOut(false)
     }
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          className="size-8 overflow-hidden rounded-full p-0 hover:bg-transparent"
-          aria-label="アカウントメニュー"
-          disabled={isSigningOut}
+    <div className="relative">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-sm"
+            className="size-8 overflow-hidden rounded-full p-0 hover:bg-transparent"
+            aria-label="アカウントメニュー"
+            disabled={isSigningOut}
+          >
+            <Avatar className="size-8 after:border-[#006591]/20">
+              {avatarUrl ? (
+                <AvatarImage
+                  src={avatarUrl}
+                  alt=""
+                  referrerPolicy="no-referrer"
+                />
+              ) : null}
+              <AvatarFallback className="bg-[#006591] text-white">
+                <User className="size-4" />
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          className="min-w-48 rounded-xl border-0 bg-[#fff8f5] p-1.5 text-[#292524] shadow-[0_8px_24px_rgba(120,113,108,0.16)] ring-1 ring-[#78716C]/10"
         >
-          <Avatar className="size-8 after:border-[#006591]/20">
-            {avatarUrl ? (
-              <AvatarImage src={avatarUrl} alt="" referrerPolicy="no-referrer" />
-            ) : null}
-            <AvatarFallback className="bg-[#006591] text-white">
-              <User className="size-4" />
-            </AvatarFallback>
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="min-w-48 rounded-xl border-0 bg-[#fff8f5] p-1.5 text-[#292524] shadow-[0_8px_24px_rgba(120,113,108,0.16)] ring-1 ring-[#78716C]/10"
-      >
-        {user?.email ? (
-          <>
-            <DropdownMenuLabel className="truncate px-2.5 py-1.5 text-xs font-medium text-[#78716C]">
-              {user.email}
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator className="bg-[#78716C]/15" />
-          </>
-        ) : null}
-        <DropdownMenuItem
-          variant="destructive"
-          disabled={isSigningOut}
-          className="cursor-pointer rounded-lg px-2.5 py-2 text-sm font-medium text-[#ba1a1a] focus:bg-[#ffdad6] focus:text-[#93000a]"
-          onSelect={() => void handleSignOut()}
+          {user?.email ? (
+            <>
+              <DropdownMenuLabel className="truncate px-2.5 py-1.5 text-xs font-medium text-[#78716C]">
+                {user.email}
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-[#78716C]/15" />
+            </>
+          ) : null}
+          <DropdownMenuItem
+            variant="destructive"
+            disabled={isSigningOut}
+            className="cursor-pointer rounded-lg px-2.5 py-2 text-sm font-medium text-[#ba1a1a] focus:bg-[#ffdad6] focus:text-[#93000a]"
+            onSelect={() => void handleSignOut()}
+          >
+            <LogOut className="size-4" />
+            {isSigningOut ? 'ログアウト中…' : 'ログアウト'}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {errorMessage ? (
+        <p
+          className="absolute top-full right-0 z-50 mt-1 w-max max-w-[min(280px,calc(100vw-2rem))] rounded-lg bg-[#ffdad6] px-2.5 py-1.5 text-right text-xs leading-[18px] font-medium text-[#93000a] shadow-[0_4px_12px_rgba(120,113,108,0.12)]"
+          role="alert"
         >
-          <LogOut className="size-4" />
-          {isSigningOut ? 'ログアウト中…' : 'ログアウト'}
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          {errorMessage}
+        </p>
+      ) : null}
+    </div>
   )
 }

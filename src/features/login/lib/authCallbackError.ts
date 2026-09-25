@@ -24,6 +24,14 @@ export function parseAuthCallbackError(href: string): AuthCallbackError | null {
   return { error, errorCode, errorDescription }
 }
 
+/** URL に OAuth コールバックのパラメータ（エラー・PKCE の認可コード）が残っているか */
+export function hasAuthCallbackParams(href: string): boolean {
+  return (
+    parseAuthCallbackError(href) !== null ||
+    new URL(href).searchParams.has('code')
+  )
+}
+
 /** コールバックエラーをログイン画面向けの文言に変換する */
 export function toLoginErrorMessage(callbackError: AuthCallbackError): string {
   const code = (callbackError.errorCode ?? '').toLowerCase()
